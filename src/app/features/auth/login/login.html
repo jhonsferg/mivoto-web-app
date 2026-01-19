@@ -1,0 +1,43 @@
+<div class="login-layout">
+  <!-- Left Side: Login Form -->
+  <div class="login-container">
+    <div class="login-header">
+      <h1 class="login-title">{{ 'AUTH.LOGIN.TITLE' | translate }}</h1>
+      <p class="login-subtitle">{{ 'AUTH.LOGIN.SUBTITLE' | translate }}</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <app-inputtext formControlName="username" [label]="'AUTH.LOGIN.USERNAME.LABEL' | translate"
+        [placeholder]="'AUTH.LOGIN.USERNAME.PLACEHOLDER' | translate"
+        [error]="loginForm.get('username')?.touched && loginForm.get('username')?.errors ? ('AUTH.LOGIN.USERNAME.ERROR' | translate) : ''"></app-inputtext>
+
+      <app-inputpassword formControlName="password" [label]="'AUTH.LOGIN.PASSWORD.LABEL' | translate"
+        [placeholder]="'AUTH.LOGIN.PASSWORD.PLACEHOLDER' | translate"
+        [error]="loginForm.get('password')?.touched && loginForm.get('password')?.errors ? ('AUTH.LOGIN.PASSWORD.ERROR' | translate) : ''"></app-inputpassword>
+
+      <div class="login-actions">
+        <app-checkbox formControlName="rememberMe">{{ 'AUTH.LOGIN.REMEMBER_ME' | translate }}</app-checkbox>
+        <a routerLink="/auth/forgot-password" class="forgot-password">{{ 'AUTH.LOGIN.FORGOT_PASSWORD' | translate }}</a>
+      </div>
+
+      <app-btn type="submit" [loading]="isLoading" [disabled]="loginForm.invalid" variant="primary" size="lg"
+        class="submit-btn">
+        {{ 'AUTH.LOGIN.SUBMIT' | translate }}
+      </app-btn>
+    </form>
+
+    <div class="login-footer">
+      <p>{{ 'AUTH.LOGIN.FOOTER' | translate }}</p>
+    </div>
+  </div>
+
+  <!-- Right Side: Corporate Image -->
+  <div class="image-container">
+    <div class="overlay">
+      <div class="overlay-content">
+        <h2>{{ 'AUTH.LOGIN.HERO.TITLE' | translate }}</h2>
+        <p>{{ 'AUTH.LOGIN.HERO.TEXT' | translate }}</p>
+      </div>
+    </div>
+  </div>
+</div>

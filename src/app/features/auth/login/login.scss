@@ -1,0 +1,134 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.login-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--background-base);
+}
+
+.login-container {
+  flex: none;
+  /* Don't grow, fixed width logic */
+  width: 100%;
+  max-width: 480px;
+  /* Standard form width */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem;
+  /* Increase padding */
+  background: white;
+  z-index: 10;
+
+  @media (min-width: 1024px) {
+    width: 480px;
+    /* Fixed width on desktop */
+    box-shadow: 20px 0 40px rgba(0, 0, 0, 0.05);
+    /* Soft shadow over image */
+  }
+}
+
+.login-header {
+  margin-bottom: 2.5rem;
+}
+
+.login-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.025em;
+}
+
+.login-subtitle {
+  color: var(--text-muted);
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.login-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.forgot-password {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.submit-btn {
+  width: 100%;
+
+  ::ng-deep button {
+    width: 100%;
+  }
+}
+
+.login-footer {
+  margin-top: auto;
+  padding-top: 2rem;
+  text-align: center;
+
+  p {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+}
+
+/* Right Side Image */
+.image-container {
+  flex: 1;
+  background-image: url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: none;
+
+  @media (min-width: 1024px) {
+    display: block;
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.6));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 4rem;
+  }
+
+  .overlay-content {
+    color: white;
+    max-width: 500px;
+
+    h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.25rem;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+  }
+}
