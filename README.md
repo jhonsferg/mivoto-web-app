@@ -1,59 +1,59 @@
-# Mivoto
+# MiVoto Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.14.
+This is the Angular frontend application for the MiVoto electronic voting system.
 
-## Development server
+## Project Structure
 
-To start a local development server, run:
+The project follows a scalable architecture organized by domain:
+
+- **Core (`src/app/core`)**: Singleton services, interceptors, guards, and models used throughout the application.
+- **Shared (`src/app/shared`)**: Reusable components, pipes, and directives.
+- **Features (`src/app/features`)**: Business logic modules (Auth, Dashboard, Voting).
+- **Layouts (`src/app/layouts`)**: Main wrappers for different page types (Main Layout, Auth Layout).
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v18+ recommended)
+- npm or yarn
+- Angular CLI (`npm install -g @angular/cli`)
+
+### Installation
+
+1.  Clone the repository.
+2.  Navigate to `mivoto-web-app`.
+3.  Install dependencies:
+    ```bash
+    npm install
+    ```
+
+### Running the Application
+
+Run the development server:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Navigate to `http://localhost:4200/`.
 
-## Code scaffolding
+### connection to Backend
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+The application connects to the backend at `http://localhost:8080/api/v1` by default. You can change this in `src/environments/environment.ts`.
 
-```bash
-ng generate component component-name
-```
+## Build
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+To build the project for production:
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Running Tests
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Run unit tests via Karma:
 
 ```bash
 ng test
 ```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
