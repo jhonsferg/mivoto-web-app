@@ -1,0 +1,51 @@
+{
+    "AUTH": {
+        "LOGIN": {
+            "TITLE": "Welcome Back",
+            "SUBTITLE": "Please sign in to your authorized account",
+            "USERNAME": {
+                "LABEL": "Username",
+                "PLACEHOLDER": "Enter your username",
+                "ERROR": "Username is required"
+            },
+            "PASSWORD": {
+                "LABEL": "Password",
+                "PLACEHOLDER": "Enter your password",
+                "ERROR": "Password is required"
+            },
+            "REMEMBER_ME": "Remember me",
+            "FORGOT_PASSWORD": "Forgot password?",
+            "SUBMIT": "Sign In",
+            "FOOTER": "Protected by MiVoto Security Systems",
+            "HERO": {
+                "TITLE": "Secure Electronic Voting",
+                "TEXT": "Advanced technology for transparent and reliable elections."
+            },
+            "ERROR": {
+                "TITLE": "Authentication Failed",
+                "MESSAGE": "Invalid username or password. Please verify your credentials and try again."
+            }
+        },
+        "FORGOT_PASSWORD": {
+            "TITLE": "Reset Password",
+            "SUBTITLE": "Enter your email address to receive instructions on how to reset your password.",
+            "BACK_TO_LOGIN": "Back to Login",
+            "EMAIL": {
+                "LABEL": "Email Address",
+                "PLACEHOLDER": "name@company.com",
+                "ERROR": "Valid email is required"
+            },
+            "RESEND": {
+                "TEXT": "Didn't receive the email?",
+                "BUTTON": "Resend"
+            },
+            "SUBMIT": "Send Reset Link",
+            "SUCCESS_MESSAGE": "We have sent a password reset link to your email.",
+            "FOOTER": "Protected by MiVoto Security Systems",
+            "HERO": {
+                "TITLE": "Account Recovery",
+                "TEXT": "Securely restore access to your electronic voting dashboard."
+            }
+        }
+    }
+}

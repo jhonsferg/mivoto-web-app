@@ -1,0 +1,51 @@
+{
+    "AUTH": {
+        "LOGIN": {
+            "TITLE": "Bienvenido",
+            "SUBTITLE": "Ingrese a su cuenta autorizada",
+            "USERNAME": {
+                "LABEL": "Usuario",
+                "PLACEHOLDER": "Ingrese su usuario",
+                "ERROR": "El usuario es requerido"
+            },
+            "PASSWORD": {
+                "LABEL": "Contraseña",
+                "PLACEHOLDER": "Ingrese su contraseña",
+                "ERROR": "La contraseña es requerida"
+            },
+            "REMEMBER_ME": "Recordarme",
+            "FORGOT_PASSWORD": "¿Olvidaste tu contraseña?",
+            "SUBMIT": "Ingresar",
+            "FOOTER": "Protegido por MiVoto Security Systems",
+            "HERO": {
+                "TITLE": "Voto Electrónico Seguro",
+                "TEXT": "Tecnología avanzada para elecciones transparentes y confiables."
+            },
+            "ERROR": {
+                "TITLE": "Autenticación Fallida",
+                "MESSAGE": "Usuario o contraseña inválidos. Por favor verifique sus credenciales e intente nuevamente."
+            }
+        },
+        "FORGOT_PASSWORD": {
+            "TITLE": "Restablecer Contraseña",
+            "SUBTITLE": "Ingrese su correo electrónico para recibir instrucciones sobre cómo restablecer su contraseña.",
+            "BACK_TO_LOGIN": "Volver al Inicio de Sesión",
+            "EMAIL": {
+                "LABEL": "Correo Electrónico",
+                "PLACEHOLDER": "nombre@empresa.com",
+                "ERROR": "Se requiere un correo válido"
+            },
+            "RESEND": {
+                "TEXT": "¿No recibió el correo?",
+                "BUTTON": "Reenviar"
+            },
+            "SUBMIT": "Enviar Enlace de Restablecimiento",
+            "SUCCESS_MESSAGE": "Hemos enviado un enlace de restablecimiento de contraseña a su correo.",
+            "FOOTER": "Protegido por MiVoto Security Systems",
+            "HERO": {
+                "TITLE": "Recuperación de Cuenta",
+                "TEXT": "Restaure de forma segura el acceso a su panel de votación electrónica."
+            }
+        }
+    }
+}
