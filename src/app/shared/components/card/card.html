@@ -1,0 +1,23 @@
+<div class="card">
+    @if (title()) {
+    <div class="card__header">
+        <div class="card__title-group">
+            <h3 class="card__title">{{ title() }}</h3>
+            @if (subtitle()) {
+            <p class="card__subtitle">{{ subtitle() }}</p>
+            }
+        </div>
+        <div class="card__actions">
+            <ng-content select="[header-actions]"></ng-content>
+        </div>
+    </div>
+    }
+
+    <div class="card__body">
+        <ng-content></ng-content>
+    </div>
+
+    <div class="card__footer">
+        <ng-content select="[footer]"></ng-content>
+    </div>
+</div>

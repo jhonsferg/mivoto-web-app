@@ -1,0 +1,17 @@
+<div class="input-wrapper" [class.input-wrapper--disabled]="disabled">
+    @if (label()) {
+    <label [for]="id()" class="input-wrapper__label">
+        {{ label() }}
+        @if (required()) { <span class="input-wrapper__required">*</span> }
+    </label>
+    }
+
+    <div class="input-container">
+        <input [id]="id()" [type]="type()" [placeholder]="placeholder()" [disabled]="disabled" [value]="value"
+            (input)="onInput($event)" (blur)="onBlur()" class="input-field" [class.input-field--error]="error()">
+    </div>
+
+    @if (error()) {
+    <span class="input-wrapper__error">{{ error() }}</span>
+    }
+</div>

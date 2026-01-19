@@ -1,0 +1,14 @@
+<button class="btn" [ngClass]="[
+    'btn--' + variant(), 
+    'btn--' + size(), 
+    loading() ? 'btn--loading' : ''
+  ]" [disabled]="disabled() || loading()" (click)="handleClick($event)">
+
+    @if (loading()) {
+    <span class="btn__loader"></span>
+    }
+
+    <span class="btn__content" [class.btn__content--hidden]="loading()">
+        <ng-content></ng-content>
+    </span>
+</button>

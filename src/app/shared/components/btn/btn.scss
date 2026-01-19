@@ -1,0 +1,115 @@
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    outline: none;
+    overflow: hidden;
+
+    &:focus-visible {
+        box-shadow: 0 0 0 2px var(--background-base), 0 0 0 4px var(--primary-color);
+    }
+
+    &[disabled] {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    // Variants
+    &--primary {
+        background-color: var(--primary-color);
+        color: white;
+
+        &:not([disabled]):hover {
+            background-color: var(--primary-hover);
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+        }
+    }
+
+    &--secondary {
+        background-color: var(--secondary-color);
+        color: white;
+
+        &:not([disabled]):hover {
+            filter: brightness(0.9);
+        }
+    }
+
+    &--outline {
+        background-color: transparent;
+        border-color: var(--border-color);
+        color: var(--text-main);
+
+        &:not([disabled]):hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            border-color: var(--text-muted);
+        }
+    }
+
+    &--ghost {
+        background-color: transparent;
+        color: var(--text-main);
+
+        &:not([disabled]):hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+    }
+
+    &--danger {
+        background-color: #ef4444;
+        color: white;
+
+        &:not([disabled]):hover {
+            background-color: #dc2626;
+        }
+    }
+
+    // Sizes
+    &--sm {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    &--md {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+    }
+
+    &--lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1.125rem;
+    }
+
+    // Elements
+    &__loader {
+        position: absolute;
+        width: 1em;
+        height: 1em;
+        border: 2px solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.75s linear infinite;
+    }
+
+    &__content {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &--hidden {
+            visibility: hidden;
+        }
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

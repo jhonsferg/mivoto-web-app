@@ -1,0 +1,23 @@
+@if (visible()) {
+<div class="alert" [ngClass]="'alert--' + type()">
+    <div class="alert__icon">
+        @if (type() === 'success') { <span>✓</span> }
+        @else if (type() === 'error') { <span>✕</span> }
+        @else if (type() === 'warning') { <span>!</span> }
+        @else { <span>i</span> }
+    </div>
+
+    <div class="alert__content">
+        @if (title()) {
+        <h4 class="alert__title">{{ title() }}</h4>
+        }
+        <p class="alert__message">
+            <ng-content></ng-content>
+        </p>
+    </div>
+
+    @if (dismissible()) {
+    <button class="alert__close" (click)="dismiss()">×</button>
+    }
+</div>
+}
