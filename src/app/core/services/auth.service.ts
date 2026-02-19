@@ -4,8 +4,20 @@ import { ApiService } from './api.service';
 import { SessionService } from './session.service';
 import { User } from '@core/models/user.model';
 import { ApiResponse } from '@core/models/api-response.model';
-import { tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+
+export interface LoginData {
+  accessToken: string;
+  refreshToken?: string;
+  user: User;
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -19,12 +31,13 @@ export class AuthService {
   /**
    * Authenticates a user with the provided credentials.
    * @param credentials The username and password.
-   * @returns An Observable containing the token and user data.
+   * @returns An Observable containing the login data.
    */
-  public login(credentials: { username: string; password: string }): Observable<any> {
-    return this.api.post<{ token: string; user: User }>('auth/login', credentials).pipe(
-      tap((response) => {
-        this.session.setSession(response.token, response.user);
+  public login(credentials: { username: string; password: string }): Observable<LoginData> {
+    return this.api.post<ApiResponse<LoginData>>('auth/login', credentials).pipe(
+      map(response => response.data),
+      tap((data) => {
+        this.session.setSession(data.accessToken, data.user);
       }),
     );
   }
@@ -59,7 +72,7 @@ export class AuthService {
    * @param request The password change request.
    * @returns An Observable indicating successful password change.
    */
-  public changePassword(request: any): Observable<ApiResponse<void>> {
+  public changePassword(request: ChangePasswordRequest): Observable<ApiResponse<void>> {
     return this.api.post<ApiResponse<void>>(`${this.BASE_URL}/change-password`, request);
   }
 }

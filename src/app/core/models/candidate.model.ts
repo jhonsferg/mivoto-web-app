@@ -1,9 +1,11 @@
 export interface Candidate {
   id: number;
-  firstName: string;
-  lastName: string;
+  number: number;
+  name: string;
   party: string;
-  position: string;
+  description: string;
   electionId: number;
-  imageUrl?: string;
+  photoUrl?: string;
+  active: boolean;
+  voteCount: number;
 }

@@ -1,0 +1,97 @@
+<div class="dashboard-container">
+  <div class="header">
+    <h1>Panel de Administración</h1>
+    <p>Gestiona el sistema de votación electrónica</p>
+  </div>
+
+  <div *ngIf="isLoading" class="loading">
+    <p>Cargando datos del sistema...</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="dashboard-content">
+    <div *ngIf="systemStats" class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ systemStats.totalUsers || 0 }}</span>
+          <span class="stat-label">Usuarios Totales</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🗳️</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ systemStats.totalElections || 0 }}</span>
+          <span class="stat-label">Elecciones Totales</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">✓</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ systemStats.activeElections || 0 }}</span>
+          <span class="stat-label">Elecciones Activas</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ systemStats.totalVotes || 0 }}</span>
+          <span class="stat-label">Votos Emitidos</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <h2>Acciones Rápidas</h2>
+      <div class="actions-grid">
+        <button class="action-btn" (click)="navigateToElections()">
+          <span class="action-icon">📋</span>
+          <span class="action-label">Gestionar Elecciones</span>
+        </button>
+        <button class="action-btn" (click)="navigateToCandidates()">
+          <span class="action-icon">👤</span>
+          <span class="action-label">Gestionar Candidatos</span>
+        </button>
+        <button class="action-btn" (click)="navigateToUsers()">
+          <span class="action-icon">👥</span>
+          <span class="action-label">Gestionar Usuarios</span>
+        </button>
+        <button class="action-btn" (click)="navigateToAudit()">
+          <span class="action-icon">🔍</span>
+          <span class="action-label">Auditoría</span>
+        </button>
+        <button class="action-btn" (click)="navigateToSettings()">
+          <span class="action-icon">⚙️</span>
+          <span class="action-label">Configuración</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="recent-elections">
+      <h2>Elecciones Recientes</h2>
+      <div *ngIf="recentElections.length === 0" class="empty-state">
+        <p>No hay elecciones registradas</p>
+      </div>
+      <div *ngIf="recentElections.length > 0" class="elections-list">
+        <div *ngFor="let election of recentElections" class="election-item">
+          <div class="election-info">
+            <h3>{{ election.title }}</h3>
+            <p>{{ election.description }}</p>
+            <div class="election-dates">
+              <span>{{ election.startDate | date: 'dd/MM/yyyy' }}</span>
+              -
+              <span>{{ election.endDate | date: 'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+          <div class="election-actions">
+            <button class="btn-results" (click)="viewElectionResults(election.id)">
+              Ver Resultados
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

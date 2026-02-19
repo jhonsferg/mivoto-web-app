@@ -14,12 +14,20 @@ export class AuditService {
     private readonly BASE_URL = 'audit';
 
     /**
+     * Retrieves all audit logs.
+     * @returns An Observable containing a list of all audit logs.
+     */
+    public getAllAuditLogs(): Observable<ApiResponse<AuditLog[]>> {
+        return this.api.get<ApiResponse<AuditLog[]>>(this.BASE_URL);
+    }
+
+    /**
      * Retrieves audit logs for a specific user.
      * @param userId The ID of the user.
      * @returns An Observable containing a list of audit logs.
      */
     public getAuditTrailByUser(userId: number): Observable<ApiResponse<AuditLog[]>> {
-        return this.api.get<ApiResponse<AuditLog[]>>(`${this.BASE_URL} /user/${userId} `);
+        return this.api.get<ApiResponse<AuditLog[]>>(`${this.BASE_URL}/user/${userId}`);
     }
 
     /**
@@ -29,7 +37,7 @@ export class AuditService {
      * @returns An Observable containing a list of audit logs.
      */
     public getAuditTrailByEntity(entity: string, entityId: number): Observable<ApiResponse<AuditLog[]>> {
-        return this.api.get<ApiResponse<AuditLog[]>>(`${this.BASE_URL} /entity/${entity}/${entityId}`);
+        return this.api.get<ApiResponse<AuditLog[]>>(`${this.BASE_URL}/entity/${entity}/${entityId}`);
     }
 
     /**

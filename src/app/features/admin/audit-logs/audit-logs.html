@@ -1,0 +1,85 @@
+<div class="audit-logs-container">
+  <div class="header">
+    <h1>Auditoría y Logs</h1>
+  </div>
+
+  <div class="filters-section">
+    <div class="filter-group">
+      <label for="filter-type">Filtrar por:</label>
+      <select id="filter-type" [(ngModel)]="filterType" (change)="onFilterChange()">
+        <option value="all">Todos los Logs</option>
+        <option value="security">Logs de Seguridad</option>
+        <option value="voting">Logs de Votación</option>
+        <option value="critical">Logs Críticos</option>
+        <option value="action">Por Acción</option>
+        <option value="dateRange">Por Rango de Fechas</option>
+      </select>
+    </div>
+
+    <div *ngIf="filterType === 'action'" class="filter-group">
+      <label for="action-select">Acción:</label>
+      <select id="action-select" [(ngModel)]="selectedAction">
+        <option value="">-- Selecciona una acción --</option>
+        <option *ngFor="let action of actions" [value]="action.value">
+          {{ action.label }}
+        </option>
+      </select>
+      <button class="btn-apply" (click)="applyFilters()">Aplicar</button>
+    </div>
+
+    <div *ngIf="filterType === 'dateRange'" class="filter-group date-range">
+      <div>
+        <label for="start-date">Desde:</label>
+        <input type="datetime-local" id="start-date" [(ngModel)]="startDate" />
+      </div>
+      <div>
+        <label for="end-date">Hasta:</label>
+        <input type="datetime-local" id="end-date" [(ngModel)]="endDate" />
+      </div>
+      <button class="btn-apply" (click)="applyFilters()">Aplicar</button>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading">
+    <p>Cargando logs de auditoría...</p>
+  </div>
+
+  <div *ngIf="!isLoading && logs.length === 0" class="empty-state">
+    <p>No hay logs disponibles con los filtros seleccionados</p>
+  </div>
+
+  <div *ngIf="!isLoading && logs.length > 0" class="logs-table">
+    <div class="logs-summary">
+      <p>Se encontraron <strong>{{ logs.length }}</strong> registros</p>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Usuario</th>
+          <th>Acción</th>
+          <th>Entidad</th>
+          <th>Descripción</th>
+          <th>IP</th>
+          <th>Fecha/Hora</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of logs" [class]="getActionClass(log.action)">
+          <td>{{ log.id }}</td>
+          <td>{{ log.userId }}</td>
+          <td>
+            <span class="action-badge" [class]="getActionClass(log.action)">
+              {{ getActionLabel(log.action) }}
+            </span>
+          </td>
+          <td>{{ log.entity || '-' }}</td>
+          <td class="description">{{ log.description }}</td>
+          <td class="ip">{{ log.ipAddress }}</td>
+          <td>{{ log.timestamp | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

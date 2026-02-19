@@ -1,0 +1,99 @@
+<div class="results-container">
+  <div class="header">
+    <button class="btn-back" (click)="goBack()">← Volver al Panel</button>
+    <h1>Resultados de Elección</h1>
+  </div>
+
+  <div *ngIf="isLoading" class="loading">
+    <p>Cargando resultados...</p>
+  </div>
+
+  <div *ngIf="!isLoading && electionResults" class="results-content">
+    <div class="election-info-card">
+      <h2>{{ electionResults.electionTitle }}</h2>
+      <div class="total-votes">
+        <span class="label">Total de Votos:</span>
+        <span class="value">{{ electionResults.totalVotes }}</span>
+      </div>
+    </div>
+
+    <div *ngIf="statistics" class="statistics-cards">
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ statistics.totalCandidates }}</span>
+          <span class="stat-label">Candidatos</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">👑</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ statistics.leadingCandidate?.name || 'N/A' }}</span>
+          <span class="stat-label">Candidato Líder</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">📈</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ statistics.participationRate?.toFixed(2) || 0 }}%</span>
+          <span class="stat-label">Participación</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="results-list">
+      <h3>Resultados por Candidato</h3>
+      <div *ngIf="electionResults.results.length === 0" class="empty-state">
+        <p>No hay resultados disponibles aún</p>
+      </div>
+
+      <div
+        *ngFor="let result of electionResults.results; let i = index"
+        class="result-card"
+        [class.winner]="i === 0"
+      >
+        <div class="rank">
+          <span class="rank-number">{{ i + 1 }}</span>
+          <span *ngIf="i === 0" class="crown">👑</span>
+        </div>
+
+        <div class="candidate-info">
+          <h4>{{ result.candidateName }}</h4>
+          <p class="party">{{ result.party }}</p>
+          <p class="number">Número: {{ result.number }}</p>
+        </div>
+
+        <div class="vote-stats">
+          <div class="votes">
+            <span class="votes-value">{{ result.votes }}</span>
+            <span class="votes-label">votos</span>
+          </div>
+
+          <div class="percentage-bar">
+            <div
+              class="percentage-fill"
+              [class]="getPercentageClass(result.percentage)"
+              [style.width.%]="result.percentage"
+            ></div>
+          </div>
+
+          <div class="percentage-value" [class]="getPercentageClass(result.percentage)">
+            {{ result.percentage?.toFixed(2) }}%
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="statistics?.votesByParty" class="party-summary">
+      <h3>Votos por Partido</h3>
+      <div class="party-list">
+        <div *ngFor="let party of statistics.votesByParty | keyvalue" class="party-item">
+          <span class="party-name">{{ party.key }}</span>
+          <span class="party-votes">{{ party.value }} votos</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

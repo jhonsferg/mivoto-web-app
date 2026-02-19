@@ -12,6 +12,11 @@ export interface VoteRequest {
 export interface VoteResponse {
     voteHash: string;
     timestamp: string;
+    id?: number;
+    electionId?: number;
+    votedAt?: string;
+    status?: string;
+    verificationCode?: string;
 }
 
 /**

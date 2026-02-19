@@ -1,6 +1,7 @@
 import { ApplicationRef, ComponentRef, EnvironmentInjector, Injectable, createComponent, inject } from '@angular/core';
 import { DialogConfig } from '@core/models/dialog.model';
 import { Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { DialogComponent } from '@shared/components/dialog/dialog';
 
 @Injectable({
@@ -81,14 +82,14 @@ export class DialogService {
         });
     }
 
-    public success(title: string, message: string): Observable<boolean> {
+    public success(title: string, message: string): Observable<void> {
         return this.open({
             title,
             message,
             type: 'success',
             confirmText: 'OK',
             confirmColor: 'primary'
-        });
+        }).pipe(map(() => undefined));
     }
 
     public warning(title: string, message: string): Observable<boolean> {
@@ -101,14 +102,14 @@ export class DialogService {
         });
     }
 
-    public error(title: string, message: string): Observable<boolean> {
+    public error(title: string, message: string): Observable<void> {
         return this.open({
             title,
             message,
             type: 'error',
             confirmText: 'Close',
             confirmColor: 'danger'
-        });
+        }).pipe(map(() => undefined));
     }
 
     public confirm(title: string, message: string, confirmText: string = 'Yes', cancelText: string = 'Cancel'): Observable<boolean> {

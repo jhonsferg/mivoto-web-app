@@ -1,0 +1,89 @@
+<div class="election-detail-container">
+  <div *ngIf="isLoading" class="loading">
+    <p>Cargando información de la elección...</p>
+  </div>
+
+  <div *ngIf="!isLoading && election" class="content">
+    <div class="header">
+      <button class="btn-back" (click)="goBack()">← Volver</button>
+      <h1>{{ election.title }}</h1>
+      <p class="description">{{ election.description }}</p>
+
+      <div class="election-info">
+        <div class="info-item">
+          <span class="label">Inicio:</span>
+          <span class="value">{{ election.startDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Fin:</span>
+          <span class="value">{{ election.endDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="hasVoted" class="voted-banner">
+        <p>✓ Ya has emitido tu voto en esta elección</p>
+      </div>
+
+      <div *ngIf="!isElectionActive() && !hasVoted" class="inactive-banner">
+        <p>Esta elección no está activa en este momento</p>
+      </div>
+    </div>
+
+    <div class="candidates-section">
+      <h2>Candidatos</h2>
+
+      <div *ngIf="candidates.length === 0" class="empty-state">
+        <p>No hay candidatos registrados para esta elección</p>
+      </div>
+
+      <div *ngIf="candidates.length > 0" class="candidates-grid">
+        <div
+          *ngFor="let candidate of candidates"
+          class="candidate-card"
+          [class.selected]="selectedCandidateId === candidate.id"
+          [class.disabled]="hasVoted || !isElectionActive()"
+          (click)="selectCandidate(candidate.id)"
+        >
+          <div class="candidate-number">{{ candidate.number }}</div>
+
+          <div class="candidate-photo">
+            <img
+              *ngIf="candidate.photoUrl"
+              [src]="candidate.photoUrl"
+              [alt]="candidate.name"
+            />
+            <div *ngIf="!candidate.photoUrl" class="photo-placeholder">
+              {{ candidate.name.charAt(0) }}
+            </div>
+          </div>
+
+          <div class="candidate-info">
+            <h3>{{ candidate.name }}</h3>
+            <p class="party">{{ candidate.party }}</p>
+            <p *ngIf="candidate.description" class="bio">{{ candidate.description }}</p>
+          </div>
+
+          <div *ngIf="selectedCandidateId === candidate.id" class="selected-badge">
+            ✓ Seleccionado
+          </div>
+        </div>
+      </div>
+
+      <div
+        *ngIf="!hasVoted && isElectionActive() && candidates.length > 0"
+        class="vote-actions"
+      >
+        <button
+          class="btn-vote-submit"
+          [disabled]="!selectedCandidateId || isSubmittingVote"
+          (click)="castVote()"
+        >
+          {{ isSubmittingVote ? 'Emitiendo voto...' : 'Emitir Voto' }}
+        </button>
+        <p class="vote-warning">
+          ⚠️ Una vez emitido tu voto, no podrás cambiarlo. Por favor, verifica tu selección.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

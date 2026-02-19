@@ -1,0 +1,239 @@
+.election-detail-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  .loading {
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.2rem;
+    color: #7f8c8d;
+  }
+
+  .content {
+    .header {
+      margin-bottom: 3rem;
+
+      .btn-back {
+        background: transparent;
+        border: none;
+        color: #3498db;
+        font-size: 1rem;
+        cursor: pointer;
+        margin-bottom: 1rem;
+        padding: 0.5rem 0;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #2980b9;
+        }
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+      }
+
+      .description {
+        color: #7f8c8d;
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .election-info {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+
+        .info-item {
+          display: flex;
+          gap: 0.5rem;
+
+          .label {
+            font-weight: 600;
+            color: #2c3e50;
+          }
+
+          .value {
+            color: #7f8c8d;
+          }
+        }
+      }
+
+      .voted-banner,
+      .inactive-banner {
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 600;
+      }
+
+      .voted-banner {
+        background: #d4edda;
+        color: #27ae60;
+      }
+
+      .inactive-banner {
+        background: #f8d7da;
+        color: #c0392b;
+      }
+    }
+
+    .candidates-section {
+      h2 {
+        font-size: 2rem;
+        color: #2c3e50;
+        margin-bottom: 2rem;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #7f8c8d;
+      }
+
+      .candidates-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+
+        .candidate-card {
+          background: white;
+          border: 3px solid #ecf0f1;
+          border-radius: 12px;
+          padding: 1.5rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          position: relative;
+
+          &:hover:not(.disabled) {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+          }
+
+          &.selected {
+            border-color: #3498db;
+            background: #ebf5fb;
+          }
+
+          &.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+          }
+
+          .candidate-number {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+          }
+
+          .candidate-photo {
+            text-align: center;
+            margin-bottom: 1rem;
+
+            img {
+              width: 120px;
+              height: 120px;
+              border-radius: 50%;
+              object-fit: cover;
+            }
+
+            .photo-placeholder {
+              width: 120px;
+              height: 120px;
+              border-radius: 50%;
+              background: #3498db;
+              color: white;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 3rem;
+              font-weight: 700;
+              margin: 0 auto;
+            }
+          }
+
+          .candidate-info {
+            text-align: center;
+
+            h3 {
+              font-size: 1.5rem;
+              color: #2c3e50;
+              margin-bottom: 0.5rem;
+            }
+
+            .party {
+              color: #7f8c8d;
+              font-weight: 600;
+              margin-bottom: 1rem;
+            }
+
+            .bio {
+              color: #95a5a6;
+              font-size: 0.9rem;
+              line-height: 1.5;
+            }
+          }
+
+          .selected-badge {
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background: #3498db;
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            font-weight: 600;
+          }
+        }
+      }
+
+      .vote-actions {
+        text-align: center;
+        margin-top: 3rem;
+
+        .btn-vote-submit {
+          padding: 1rem 3rem;
+          background: #27ae60;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-size: 1.2rem;
+          font-weight: 700;
+          cursor: pointer;
+          transition: background 0.3s ease;
+          margin-bottom: 1rem;
+
+          &:hover:not(:disabled) {
+            background: #229954;
+          }
+
+          &:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+          }
+        }
+
+        .vote-warning {
+          color: #e67e22;
+          font-size: 0.9rem;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}

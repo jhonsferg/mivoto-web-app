@@ -1,0 +1,87 @@
+<div class="verification-container">
+  <div class="verification-card">
+    <h1>Verificar Voto</h1>
+    <p class="subtitle">
+      Ingresa el hash de tu voto para verificar que fue registrado correctamente
+    </p>
+
+    <div class="verification-form">
+      <div class="input-group">
+        <label for="voteHash">Hash de Verificación:</label>
+        <input
+          type="text"
+          id="voteHash"
+          [(ngModel)]="voteHash"
+          placeholder="Ingresa el hash de 64 caracteres..."
+          [disabled]="isVerifying"
+        />
+      </div>
+
+      <div class="button-group">
+        <button
+          class="btn-verify"
+          (click)="verifyVote()"
+          [disabled]="isVerifying || !voteHash.trim()"
+        >
+          {{ isVerifying ? 'Verificando...' : 'Verificar Voto' }}
+        </button>
+        <button class="btn-clear" (click)="clearForm()" [disabled]="isVerifying">Limpiar</button>
+        <button class="btn-back" (click)="goBack()">Volver</button>
+      </div>
+
+      <div *ngIf="verificationError" class="error-message">
+        {{ verificationError }}
+      </div>
+    </div>
+
+    <div *ngIf="voteRecord" class="verification-result">
+      <div class="success-icon">✓</div>
+      <h2>Voto Verificado Exitosamente</h2>
+
+      <div class="vote-details">
+        <div class="detail-item">
+          <span class="label">Elección:</span>
+          <span class="value">{{ voteRecord.electionTitle }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Candidato:</span>
+          <span class="value">{{ voteRecord.candidateName }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Fecha y Hora:</span>
+          <span class="value">{{ voteRecord.timestamp | date: 'dd/MM/yyyy HH:mm:ss' }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Hash:</span>
+          <span class="value hash">{{ voteRecord.voteHash }}</span>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <p class="info-title">✓ Tu voto es válido</p>
+        <p class="info-text">
+          Este hash confirma que tu voto fue registrado de forma segura y no ha sido alterado. La
+          información del voto está encriptada y es anónima.
+        </p>
+      </div>
+    </div>
+
+    <div class="help-section">
+      <h3>¿Cómo verificar mi voto?</h3>
+      <ol>
+        <li>Copia el hash de verificación que recibiste al votar</li>
+        <li>Pégalo en el campo de texto superior</li>
+        <li>Haz clic en "Verificar Voto"</li>
+        <li>El sistema te mostrará la información de tu voto registrado</li>
+      </ol>
+
+      <p class="note">
+        <strong>Nota:</strong> El hash de verificación es único para cada voto y no revela tu
+        identidad ni por quién votaste.
+      </p>
+    </div>
+  </div>
+</div>

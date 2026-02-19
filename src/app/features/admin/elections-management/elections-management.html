@@ -1,0 +1,195 @@
+<div class="elections-management-container">
+  <div class="header">
+    <h1>Gestión de Elecciones</h1>
+    <button class="btn-create" (click)="openCreateModal()">+ Nueva Elección</button>
+  </div>
+
+  <div *ngIf="isLoading" class="loading">
+    <p>Cargando elecciones...</p>
+  </div>
+
+  <div *ngIf="!isLoading && elections.length === 0" class="empty-state">
+    <p>No hay elecciones registradas</p>
+    <button class="btn-primary" (click)="openCreateModal()">Crear Primera Elección</button>
+  </div>
+
+  <div *ngIf="!isLoading && elections.length > 0" class="elections-table">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Título</th>
+          <th>Estado</th>
+          <th>Fecha Inicio</th>
+          <th>Fecha Fin</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let election of elections">
+          <td>{{ election.id }}</td>
+          <td>
+            <div class="election-title">{{ election.title }}</div>
+            <div class="election-description">{{ election.description }}</div>
+          </td>
+          <td>
+            <span class="status-badge" [class]="getStatusClass(election.status)">
+              {{ getStatusLabel(election.status) }}
+            </span>
+          </td>
+          <td>{{ election.startDate | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ election.endDate | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn-action btn-edit" (click)="openEditModal(election)" title="Editar">
+                ✏️
+              </button>
+              <button
+                *ngIf="election.status === 'SCHEDULED'"
+                class="btn-action btn-start"
+                (click)="startElection(election.id)"
+                title="Iniciar"
+              >
+                ▶️
+              </button>
+              <button
+                *ngIf="election.status === 'ACTIVE'"
+                class="btn-action btn-close"
+                (click)="closeElection(election.id)"
+                title="Cerrar"
+              >
+                ⏹️
+              </button>
+              <button
+                *ngIf="election.status !== 'CANCELLED' && election.status !== 'CLOSED'"
+                class="btn-action btn-cancel"
+                (click)="cancelElection(election.id)"
+                title="Cancelar"
+              >
+                ❌
+              </button>
+              <button
+                class="btn-action btn-candidates"
+                (click)="manageCandidates(election.id)"
+                title="Gestionar Candidatos"
+              >
+                👥
+              </button>
+              <button
+                *ngIf="election.status === 'CLOSED'"
+                class="btn-action btn-results"
+                (click)="viewResults(election.id)"
+                title="Ver Resultados"
+              >
+                📊
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Create Modal -->
+  <div *ngIf="showCreateModal" class="modal-overlay" (click)="closeCreateModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Nueva Elección</h2>
+        <button class="btn-close" (click)="closeCreateModal()">✕</button>
+      </div>
+      <form [formGroup]="electionForm" (ngSubmit)="createElection()">
+        <div class="form-group">
+          <label for="title">Título *</label>
+          <input type="text" id="title" formControlName="title" />
+        </div>
+
+        <div class="form-group">
+          <label for="description">Descripción</label>
+          <textarea id="description" formControlName="description" rows="3"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="startDate">Fecha de Inicio *</label>
+            <input type="datetime-local" id="startDate" formControlName="startDate" />
+          </div>
+
+          <div class="form-group">
+            <label for="endDate">Fecha de Fin *</label>
+            <input type="datetime-local" id="endDate" formControlName="endDate" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="maxVotesPerUser">Máximo de Votos por Usuario *</label>
+          <input type="number" id="maxVotesPerUser" formControlName="maxVotesPerUser" min="1" />
+        </div>
+
+        <div class="form-group checkbox">
+          <label>
+            <input type="checkbox" formControlName="allowsBlankVote" />
+            Permitir voto en blanco
+          </label>
+        </div>
+
+        <div class="form-group checkbox">
+          <label>
+            <input type="checkbox" formControlName="requiresVerification" />
+            Requiere verificación
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" (click)="closeCreateModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="!electionForm.valid">
+            Crear Elección
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div *ngIf="showEditModal" class="modal-overlay" (click)="closeEditModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Editar Elección</h2>
+        <button class="btn-close" (click)="closeEditModal()">✕</button>
+      </div>
+      <form [formGroup]="electionForm" (ngSubmit)="updateElection()">
+        <div class="form-group">
+          <label for="edit-title">Título *</label>
+          <input type="text" id="edit-title" formControlName="title" />
+        </div>
+
+        <div class="form-group">
+          <label for="edit-description">Descripción</label>
+          <textarea id="edit-description" formControlName="description" rows="3"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-startDate">Fecha de Inicio *</label>
+            <input type="datetime-local" id="edit-startDate" formControlName="startDate" />
+          </div>
+
+          <div class="form-group">
+            <label for="edit-endDate">Fecha de Fin *</label>
+            <input type="datetime-local" id="edit-endDate" formControlName="endDate" />
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" (click)="closeEditModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="!electionForm.valid">
+            Actualizar Elección
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -19,6 +19,8 @@ export interface CandidateDto {
     party: string;
     number: number;
     electionId: number;
-    isActive: boolean;
-    // Add other fields matching CandidateDto
+    active: boolean;
+    photoUrl?: string;
+    description?: string;
+    voteCount?: number;
 }

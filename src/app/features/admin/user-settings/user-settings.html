@@ -1,0 +1,159 @@
+<div class="user-settings-container">
+  <div class="header">
+    <h1>Configuración de Usuario</h1>
+  </div>
+
+  <div *ngIf="isLoadingProfile" class="loading">
+    <p>Cargando perfil...</p>
+  </div>
+
+  <div *ngIf="!isLoadingProfile && currentUser" class="settings-content">
+    <!-- Profile Section -->
+    <div class="profile-section">
+      <h2>Información del Perfil</h2>
+      <div class="profile-card">
+        <div class="profile-avatar">
+          <div class="avatar-circle">
+            {{ currentUser.firstName.charAt(0) }}{{ currentUser.lastName.charAt(0) }}
+          </div>
+        </div>
+
+        <div class="profile-details">
+          <div class="detail-row">
+            <span class="label">ID de Usuario:</span>
+            <span class="value">{{ currentUser.id }}</span>
+          </div>
+
+          <div class="detail-row">
+            <span class="label">Documento:</span>
+            <span class="value">{{ currentUser.documentNumber }}</span>
+          </div>
+
+          <div class="detail-row">
+            <span class="label">Nombre Completo:</span>
+            <span class="value">{{ currentUser.firstName }} {{ currentUser.lastName }}</span>
+          </div>
+
+          <div class="detail-row">
+            <span class="label">Email:</span>
+            <span class="value">{{ currentUser.email }}</span>
+          </div>
+
+          <div class="detail-row">
+            <span class="label">Rol:</span>
+            <span class="value">
+              <span class="role-badge" [class]="'role-' + currentUser.role.toLowerCase()">
+                {{ getRoleLabel(currentUser.role) }}
+              </span>
+            </span>
+          </div>
+
+          <div class="detail-row">
+            <span class="label">Estado:</span>
+            <span class="value">
+              <span class="status-badge" [class.active]="currentUser.active">
+                {{ currentUser.active ? 'Activo' : 'Inactivo' }}
+              </span>
+            </span>
+          </div>
+
+          <div *ngIf="currentUser.lastLogin" class="detail-row">
+            <span class="label">Último Acceso:</span>
+            <span class="value">{{ currentUser.lastLogin | date: 'dd/MM/yyyy HH:mm:ss' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change Password Section -->
+    <div class="password-section">
+      <h2>Cambiar Contraseña</h2>
+      <div class="password-card">
+        <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+          <div class="form-group">
+            <label for="oldPassword">Contraseña Actual *</label>
+            <input type="password" id="oldPassword" formControlName="oldPassword" />
+            <div
+              *ngIf="
+                passwordForm.get('oldPassword')?.invalid &&
+                passwordForm.get('oldPassword')?.touched
+              "
+              class="error-message"
+            >
+              La contraseña actual es requerida
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="newPassword">Nueva Contraseña *</label>
+            <input type="password" id="newPassword" formControlName="newPassword" />
+            <small>Mínimo 6 caracteres</small>
+            <div
+              *ngIf="
+                passwordForm.get('newPassword')?.invalid &&
+                passwordForm.get('newPassword')?.touched
+              "
+              class="error-message"
+            >
+              La contraseña debe tener al menos 6 caracteres
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">Confirmar Nueva Contraseña *</label>
+            <input type="password" id="confirmPassword" formControlName="confirmPassword" />
+            <div
+              *ngIf="
+                passwordForm.get('confirmPassword')?.hasError('passwordMismatch') &&
+                passwordForm.get('confirmPassword')?.touched
+              "
+              class="error-message"
+            >
+              Las contraseñas no coinciden
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="submit"
+              class="btn-primary"
+              [disabled]="!passwordForm.valid || isChangingPassword"
+            >
+              {{ isChangingPassword ? 'Actualizando...' : 'Cambiar Contraseña' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Security Info -->
+    <div class="security-info">
+      <h2>Seguridad</h2>
+      <div class="info-card">
+        <div class="info-item">
+          <div class="info-icon">🔒</div>
+          <div class="info-content">
+            <h3>Protección de Cuenta</h3>
+            <p>Tu cuenta está protegida con autenticación JWT y encriptación de extremo a extremo.</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon">🔐</div>
+          <div class="info-content">
+            <h3>Contraseñas Seguras</h3>
+            <p>Utiliza contraseñas fuertes con al menos 8 caracteres, incluyendo números y símbolos.</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon">📝</div>
+          <div class="info-content">
+            <h3>Auditoría</h3>
+            <p>Todas tus acciones son registradas para garantizar la transparencia y seguridad del sistema.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

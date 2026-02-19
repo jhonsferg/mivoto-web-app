@@ -5,4 +5,7 @@ export interface User {
   lastName: string;
   email: string;
   role: 'ADMIN' | 'VOTER';
+  documentNumber?: string;
+  active?: boolean;
+  lastLogin?: string;
 }
