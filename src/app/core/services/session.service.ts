@@ -33,8 +33,19 @@ export class SessionService {
 
     /**
      * Computed signal for the current user's role.
+     * Falls back to decoding the role from the JWT token if the user object lacks it.
      */
-    public readonly userRole = computed(() => this._currentUser()?.role);
+    public readonly userRole = computed(() => {
+        const roleFromUser = this._currentUser()?.role;
+        if (roleFromUser) return roleFromUser;
+        const token = this._token();
+        if (!token) return undefined;
+        try {
+            return this.jwtHelper.decodeToken(token)?.role as string | undefined;
+        } catch {
+            return undefined;
+        }
+    });
 
     /**
      * Sets the current session with the provided token and user.

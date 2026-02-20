@@ -3,6 +3,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from '@core/services/auth.service';
+import { APP_ROUTES } from '@core/constants/routes.constants';
+import { ROLES } from '@core/constants/roles.constants';
 import { InputtextComponent } from '@shared/components/inputtext/inputtext';
 import { InputpasswordComponent } from '@shared/components/inputpassword/inputpassword';
 import { BtnComponent } from '@shared/components/btn/btn';
@@ -61,20 +63,21 @@ export class LoginComponent implements OnDestroy {
       const { username, password } = this.loginForm.value;
 
       this.auth.login({ username: username!, password: password! }).subscribe({
-        next: () => {
+        next: (data) => {
           this.isLoading = false;
-          this.router.navigate(['/']);
+          if (data.user.role === ROLES.ADMIN) {
+            this.router.navigate(['/', APP_ROUTES.ADMIN]);
+          } else {
+            this.router.navigate(['/', APP_ROUTES.VOTING]);
+          }
         },
         error: (err) => {
+          this.isLoading = false;
+          console.error('Login error', err);
           this.dialogSubscription = this.dialog.error(
             this.translate.instant('AUTH.LOGIN.ERROR.TITLE'),
             this.translate.instant('AUTH.LOGIN.ERROR.MESSAGE')
-          ).subscribe({
-            complete: () => {
-              this.isLoading = false;
-              console.error('Login error', err);
-            }
-          });
+          ).subscribe();
         }
       });
     } else {
