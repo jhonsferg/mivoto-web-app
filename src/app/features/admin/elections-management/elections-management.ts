@@ -1,5 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ElectionService } from '@core/services/election.service';
@@ -9,7 +9,7 @@ import { CreateElectionRequest, UpdateElectionRequest } from '@core/dtos/electio
 @Component({
   selector: 'app-elections-management',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule, DatePipe],
   templateUrl: './elections-management.html',
   styleUrl: './elections-management.scss',
 })
@@ -19,11 +19,11 @@ export class ElectionsManagementComponent implements OnInit {
   private readonly dialog = inject(DialogService);
   private readonly router = inject(Router);
 
-  public elections: any[] = [];
-  public isLoading = true;
-  public showCreateModal = false;
-  public showEditModal = false;
-  public selectedElection: any = null;
+  public elections = signal<any[]>([]);
+  public isLoading = signal(true);
+  public showCreateModal = signal(false);
+  public showEditModal = signal(false);
+  public selectedElection = signal<any>(null);
 
   public electionForm = this.fb.group({
     title: ['', [Validators.required, Validators.maxLength(200)]],
@@ -40,14 +40,14 @@ export class ElectionsManagementComponent implements OnInit {
   }
 
   private loadElections(): void {
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.electionService.getAllElections().subscribe({
       next: (response) => {
-        this.elections = response.data || [];
-        this.isLoading = false;
+        this.elections.set(response.data || []);
+        this.isLoading.set(false);
       },
       error: (error) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.dialog.error('Error', 'No se pudieron cargar las elecciones');
         console.error('Error loading elections:', error);
       },
@@ -60,11 +60,11 @@ export class ElectionsManagementComponent implements OnInit {
       allowsBlankVote: false,
       requiresVerification: false,
     });
-    this.showCreateModal = true;
+    this.showCreateModal.set(true);
   }
 
   public closeCreateModal(): void {
-    this.showCreateModal = false;
+    this.showCreateModal.set(false);
     this.electionForm.reset();
   }
 
@@ -87,24 +87,24 @@ export class ElectionsManagementComponent implements OnInit {
   }
 
   public openEditModal(election: any): void {
-    this.selectedElection = election;
+    this.selectedElection.set(election);
     this.electionForm.patchValue({
       title: election.title,
       description: election.description,
       startDate: this.formatDateForInput(election.startDate),
       endDate: this.formatDateForInput(election.endDate),
     });
-    this.showEditModal = true;
+    this.showEditModal.set(true);
   }
 
   public closeEditModal(): void {
-    this.showEditModal = false;
-    this.selectedElection = null;
+    this.showEditModal.set(false);
+    this.selectedElection.set(null);
     this.electionForm.reset();
   }
 
   public updateElection(): void {
-    if (this.electionForm.valid && this.selectedElection) {
+    if (this.electionForm.valid && this.selectedElection()) {
       const request: UpdateElectionRequest = {
         title: this.electionForm.value.title!,
         description: this.electionForm.value.description!,
@@ -112,7 +112,7 @@ export class ElectionsManagementComponent implements OnInit {
         endDate: this.electionForm.value.endDate!,
       };
 
-      this.electionService.updateElection(this.selectedElection.id, request).subscribe({
+      this.electionService.updateElection(this.selectedElection()!.id, request).subscribe({
         next: () => {
           this.dialog.success('Éxito', 'Elección actualizada correctamente');
           this.closeEditModal();

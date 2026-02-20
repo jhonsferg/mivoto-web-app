@@ -8,169 +8,186 @@
     <label for="election-select">Seleccionar Elección:</label>
     <select
       id="election-select"
-      [value]="selectedElectionId"
-      (change)="onElectionChange(+$any($event.target).value)"
+      [value]="selectedElectionId()"
+      (change)="onElectionChange($any($event.target).value)"
     >
-      <option [value]="null">-- Selecciona una elección --</option>
-      <option *ngFor="let election of elections" [value]="election.id">
-        {{ election.title }}
-      </option>
+      <option value="">-- Selecciona una elección --</option>
+      @for (election of elections(); track election.id) {
+        <option [value]="election.id">{{ election.title }}</option>
+      }
     </select>
   </div>
 
-  <div *ngIf="!selectedElectionId" class="no-selection">
-    <p>Por favor, selecciona una elección para ver sus candidatos</p>
-  </div>
-
-  <div *ngIf="selectedElectionId && isLoading" class="loading">
-    <p>Cargando candidatos...</p>
-  </div>
-
-  <div *ngIf="selectedElectionId && !isLoading && candidates.length === 0" class="empty-state">
-    <p>No hay candidatos registrados para esta elección</p>
-    <button class="btn-primary" (click)="openCreateModal()">Agregar Primer Candidato</button>
-  </div>
-
-  <div *ngIf="selectedElectionId && !isLoading && candidates.length > 0" class="candidates-grid">
-    <div *ngFor="let candidate of candidates" class="candidate-card">
-      <div class="candidate-header">
-        <div class="candidate-number">{{ candidate.number }}</div>
-        <div class="candidate-status">
-          <span class="status-badge" [class.active]="candidate.active">
-            {{ candidate.active ? 'Activo' : 'Inactivo' }}
-          </span>
-        </div>
-      </div>
-
-      <div class="candidate-photo">
-        <img *ngIf="candidate.photoUrl" [src]="candidate.photoUrl" [alt]="candidate.name" />
-        <div *ngIf="!candidate.photoUrl" class="photo-placeholder">
-          {{ candidate.name.charAt(0) }}
-        </div>
-      </div>
-
-      <div class="candidate-info">
-        <h3>{{ candidate.name }}</h3>
-        <p class="party">{{ candidate.party }}</p>
-        <p *ngIf="candidate.description" class="description">{{ candidate.description }}</p>
-        <p *ngIf="candidate.voteCount !== undefined" class="votes">
-          Votos: {{ candidate.voteCount }}
-        </p>
-      </div>
-
-      <div class="candidate-actions">
-        <button class="btn-action btn-edit" (click)="openEditModal(candidate)" title="Editar">
-          ✏️ Editar
-        </button>
-        <button
-          class="btn-action"
-          [class.btn-activate]="!candidate.active"
-          [class.btn-deactivate]="candidate.active"
-          (click)="toggleCandidateStatus(candidate)"
-          [title]="candidate.active ? 'Desactivar' : 'Activar'"
-        >
-          {{ candidate.active ? '🔒 Desactivar' : '✓ Activar' }}
-        </button>
-        <button
-          class="btn-action btn-delete"
-          (click)="deleteCandidate(candidate)"
-          title="Eliminar"
-        >
-          🗑️ Eliminar
-        </button>
-      </div>
+  @if (!selectedElectionId()) {
+    <div class="no-selection">
+      <p>Por favor, selecciona una elección para ver sus candidatos</p>
     </div>
-  </div>
+  }
+
+  @if (selectedElectionId() && isLoading()) {
+    <div class="loading">
+      <p>Cargando candidatos...</p>
+    </div>
+  }
+
+  @if (selectedElectionId() && !isLoading() && candidates().length === 0) {
+    <div class="empty-state">
+      <p>No hay candidatos registrados para esta elección</p>
+      <button class="btn-primary" (click)="openCreateModal()">Agregar Primer Candidato</button>
+    </div>
+  }
+
+  @if (selectedElectionId() && !isLoading() && candidates().length > 0) {
+    <div class="candidates-grid">
+      @for (candidate of candidates(); track candidate.id) {
+        <div class="candidate-card">
+          <div class="candidate-header">
+            <div class="candidate-number">{{ candidate.number }}</div>
+            <div class="candidate-status">
+              <span class="status-badge" [class.active]="candidate.active">
+                {{ candidate.active ? 'Activo' : 'Inactivo' }}
+              </span>
+            </div>
+          </div>
+
+          <div class="candidate-photo">
+            @if (candidate.photoUrl) {
+              <img [src]="candidate.photoUrl" [alt]="candidate.name" />
+            } @else {
+              <div class="photo-placeholder">{{ candidate.name.charAt(0) }}</div>
+            }
+          </div>
+
+          <div class="candidate-info">
+            <h3>{{ candidate.name }}</h3>
+            <p class="party">{{ candidate.party }}</p>
+            @if (candidate.description) {
+              <p class="description">{{ candidate.description }}</p>
+            }
+            @if (candidate.voteCount !== undefined) {
+              <p class="votes">Votos: {{ candidate.voteCount }}</p>
+            }
+          </div>
+
+          <div class="candidate-actions">
+            <button class="btn-action btn-edit" (click)="openEditModal(candidate)" title="Editar">
+              ✏️ Editar
+            </button>
+            <button
+              class="btn-action"
+              [class.btn-activate]="!candidate.active"
+              [class.btn-deactivate]="candidate.active"
+              (click)="toggleCandidateStatus(candidate)"
+              [title]="candidate.active ? 'Desactivar' : 'Activar'"
+            >
+              {{ candidate.active ? '🔒 Desactivar' : '✓ Activar' }}
+            </button>
+            <button
+              class="btn-action btn-delete"
+              (click)="deleteCandidate(candidate)"
+              title="Eliminar"
+            >
+              🗑️ Eliminar
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
 
   <!-- Create Modal -->
-  <div *ngIf="showCreateModal" class="modal-overlay" (click)="closeCreateModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2>Nuevo Candidato</h2>
-        <button class="btn-close" (click)="closeCreateModal()">✕</button>
+  @if (showCreateModal()) {
+    <div class="modal-overlay" (click)="closeCreateModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>Nuevo Candidato</h2>
+          <button class="btn-close" (click)="closeCreateModal()">✕</button>
+        </div>
+        <form [formGroup]="candidateForm" (ngSubmit)="createCandidate()">
+          <div class="form-group">
+            <label for="number">Número de Candidato *</label>
+            <input type="number" id="number" formControlName="number" min="1" />
+          </div>
+
+          <div class="form-group">
+            <label for="name">Nombre Completo *</label>
+            <input type="text" id="name" formControlName="name" />
+          </div>
+
+          <div class="form-group">
+            <label for="party">Partido Político</label>
+            <input type="text" id="party" formControlName="party" />
+          </div>
+
+          <div class="form-group">
+            <label for="description">Descripción / Propuestas</label>
+            <textarea id="description" formControlName="description" rows="4"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="photoUrl">URL de Foto</label>
+            <input type="url" id="photoUrl" formControlName="photoUrl" />
+            <small>Ingresa la URL de una imagen del candidato</small>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" (click)="closeCreateModal()">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="!candidateForm.valid">
+              Registrar Candidato
+            </button>
+          </div>
+        </form>
       </div>
-      <form [formGroup]="candidateForm" (ngSubmit)="createCandidate()">
-        <div class="form-group">
-          <label for="number">Número de Candidato *</label>
-          <input type="number" id="number" formControlName="number" min="1" />
-        </div>
-
-        <div class="form-group">
-          <label for="name">Nombre Completo *</label>
-          <input type="text" id="name" formControlName="name" />
-        </div>
-
-        <div class="form-group">
-          <label for="party">Partido Político</label>
-          <input type="text" id="party" formControlName="party" />
-        </div>
-
-        <div class="form-group">
-          <label for="description">Descripción / Propuestas</label>
-          <textarea id="description" formControlName="description" rows="4"></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="photoUrl">URL de Foto</label>
-          <input type="url" id="photoUrl" formControlName="photoUrl" />
-          <small>Ingresa la URL de una imagen del candidato</small>
-        </div>
-
-        <div class="modal-actions">
-          <button type="button" class="btn-secondary" (click)="closeCreateModal()">
-            Cancelar
-          </button>
-          <button type="submit" class="btn-primary" [disabled]="!candidateForm.valid">
-            Registrar Candidato
-          </button>
-        </div>
-      </form>
     </div>
-  </div>
+  }
 
   <!-- Edit Modal -->
-  <div *ngIf="showEditModal" class="modal-overlay" (click)="closeEditModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2>Editar Candidato</h2>
-        <button class="btn-close" (click)="closeEditModal()">✕</button>
+  @if (showEditModal()) {
+    <div class="modal-overlay" (click)="closeEditModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>Editar Candidato</h2>
+          <button class="btn-close" (click)="closeEditModal()">✕</button>
+        </div>
+        <form [formGroup]="candidateForm" (ngSubmit)="updateCandidate()">
+          <div class="form-group">
+            <label for="edit-number">Número de Candidato *</label>
+            <input type="number" id="edit-number" formControlName="number" min="1" />
+          </div>
+
+          <div class="form-group">
+            <label for="edit-name">Nombre Completo *</label>
+            <input type="text" id="edit-name" formControlName="name" />
+          </div>
+
+          <div class="form-group">
+            <label for="edit-party">Partido Político</label>
+            <input type="text" id="edit-party" formControlName="party" />
+          </div>
+
+          <div class="form-group">
+            <label for="edit-description">Descripción / Propuestas</label>
+            <textarea id="edit-description" formControlName="description" rows="4"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-photoUrl">URL de Foto</label>
+            <input type="url" id="edit-photoUrl" formControlName="photoUrl" />
+            <small>Ingresa la URL de una imagen del candidato</small>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" (click)="closeEditModal()">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="!candidateForm.valid">
+              Actualizar Candidato
+            </button>
+          </div>
+        </form>
       </div>
-      <form [formGroup]="candidateForm" (ngSubmit)="updateCandidate()">
-        <div class="form-group">
-          <label for="edit-number">Número de Candidato *</label>
-          <input type="number" id="edit-number" formControlName="number" min="1" />
-        </div>
-
-        <div class="form-group">
-          <label for="edit-name">Nombre Completo *</label>
-          <input type="text" id="edit-name" formControlName="name" />
-        </div>
-
-        <div class="form-group">
-          <label for="edit-party">Partido Político</label>
-          <input type="text" id="edit-party" formControlName="party" />
-        </div>
-
-        <div class="form-group">
-          <label for="edit-description">Descripción / Propuestas</label>
-          <textarea id="edit-description" formControlName="description" rows="4"></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="edit-photoUrl">URL de Foto</label>
-          <input type="url" id="edit-photoUrl" formControlName="photoUrl" />
-          <small>Ingresa la URL de una imagen del candidato</small>
-        </div>
-
-        <div class="modal-actions">
-          <button type="button" class="btn-secondary" (click)="closeEditModal()">
-            Cancelar
-          </button>
-          <button type="submit" class="btn-primary" [disabled]="!candidateForm.valid">
-            Actualizar Candidato
-          </button>
-        </div>
-      </form>
     </div>
-  </div>
+  }
 </div>

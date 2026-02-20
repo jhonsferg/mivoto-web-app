@@ -1,5 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CandidateService } from '@core/services/candidate.service';
@@ -10,7 +9,7 @@ import { CreateCandidateRequest, CandidateDto } from '@core/dtos/candidate.dto';
 @Component({
   selector: 'app-candidates-management',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './candidates-management.html',
   styleUrl: './candidates-management.scss',
 })
@@ -21,13 +20,13 @@ export class CandidatesManagementComponent implements OnInit {
   private readonly electionService = inject(ElectionService);
   private readonly dialog = inject(DialogService);
 
-  public elections: any[] = [];
-  public candidates: CandidateDto[] = [];
-  public selectedElectionId: number | null = null;
-  public isLoading = true;
-  public showCreateModal = false;
-  public showEditModal = false;
-  public selectedCandidate: CandidateDto | null = null;
+  public elections = signal<any[]>([]);
+  public candidates = signal<CandidateDto[]>([]);
+  public selectedElectionId = signal<number | null>(null);
+  public isLoading = signal(true);
+  public showCreateModal = signal(false);
+  public showEditModal = signal(false);
+  public selectedCandidate = signal<CandidateDto | null>(null);
 
   public candidateForm = this.fb.group({
     electionId: [null as number | null, Validators.required],
@@ -43,8 +42,8 @@ export class CandidatesManagementComponent implements OnInit {
 
     this.route.queryParams.subscribe((params) => {
       if (params['electionId']) {
-        this.selectedElectionId = Number(params['electionId']);
-        this.loadCandidates(this.selectedElectionId);
+        this.selectedElectionId.set(Number(params['electionId']));
+        this.loadCandidates(this.selectedElectionId()!);
       }
     });
   }
@@ -52,7 +51,7 @@ export class CandidatesManagementComponent implements OnInit {
   private loadElections(): void {
     this.electionService.getAllElections().subscribe({
       next: (response) => {
-        this.elections = response.data || [];
+        this.elections.set(response.data || []);
       },
       error: (error) => {
         console.error('Error loading elections:', error);
@@ -60,20 +59,26 @@ export class CandidatesManagementComponent implements OnInit {
     });
   }
 
-  public onElectionChange(electionId: number): void {
-    this.selectedElectionId = electionId;
-    this.loadCandidates(electionId);
+  public onElectionChange(value: string): void {
+    const id = Number(value);
+    if (!id) {
+      this.selectedElectionId.set(null);
+      this.candidates.set([]);
+      return;
+    }
+    this.selectedElectionId.set(id);
+    this.loadCandidates(id);
   }
 
   private loadCandidates(electionId: number): void {
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.candidateService.getCandidatesByElection(electionId).subscribe({
       next: (response) => {
-        this.candidates = response.data || [];
-        this.isLoading = false;
+        this.candidates.set(response.data || []);
+        this.isLoading.set(false);
       },
       error: (error) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.dialog.error('Error', 'No se pudieron cargar los candidatos');
         console.error('Error loading candidates:', error);
       },
@@ -81,24 +86,24 @@ export class CandidatesManagementComponent implements OnInit {
   }
 
   public openCreateModal(): void {
-    if (!this.selectedElectionId) {
+    if (!this.selectedElectionId()) {
       this.dialog.error('Error', 'Por favor selecciona una elección primero');
       return;
     }
 
     this.candidateForm.reset({
-      electionId: this.selectedElectionId,
+      electionId: this.selectedElectionId(),
       number: null,
       name: '',
       party: '',
       description: '',
       photoUrl: '',
     });
-    this.showCreateModal = true;
+    this.showCreateModal.set(true);
   }
 
   public closeCreateModal(): void {
-    this.showCreateModal = false;
+    this.showCreateModal.set(false);
     this.candidateForm.reset();
   }
 
@@ -110,8 +115,8 @@ export class CandidatesManagementComponent implements OnInit {
         next: () => {
           this.dialog.success('Éxito', 'Candidato registrado correctamente');
           this.closeCreateModal();
-          if (this.selectedElectionId) {
-            this.loadCandidates(this.selectedElectionId);
+          if (this.selectedElectionId()) {
+            this.loadCandidates(this.selectedElectionId()!);
           }
         },
         error: (error) => {
@@ -123,7 +128,7 @@ export class CandidatesManagementComponent implements OnInit {
   }
 
   public openEditModal(candidate: CandidateDto): void {
-    this.selectedCandidate = candidate;
+    this.selectedCandidate.set(candidate);
     this.candidateForm.patchValue({
       electionId: candidate.electionId,
       number: candidate.number,
@@ -132,25 +137,25 @@ export class CandidatesManagementComponent implements OnInit {
       description: candidate.description,
       photoUrl: candidate.photoUrl,
     });
-    this.showEditModal = true;
+    this.showEditModal.set(true);
   }
 
   public closeEditModal(): void {
-    this.showEditModal = false;
-    this.selectedCandidate = null;
+    this.showEditModal.set(false);
+    this.selectedCandidate.set(null);
     this.candidateForm.reset();
   }
 
   public updateCandidate(): void {
-    if (this.candidateForm.valid && this.selectedCandidate) {
+    if (this.candidateForm.valid && this.selectedCandidate()) {
       const request: CreateCandidateRequest = this.candidateForm.value as CreateCandidateRequest;
 
-      this.candidateService.updateCandidate(this.selectedCandidate.id, request).subscribe({
+      this.candidateService.updateCandidate(this.selectedCandidate()!.id, request).subscribe({
         next: () => {
           this.dialog.success('Éxito', 'Candidato actualizado correctamente');
           this.closeEditModal();
-          if (this.selectedElectionId) {
-            this.loadCandidates(this.selectedElectionId);
+          if (this.selectedElectionId()) {
+            this.loadCandidates(this.selectedElectionId()!);
           }
         },
         error: (error) => {
@@ -173,8 +178,8 @@ export class CandidatesManagementComponent implements OnInit {
           service.subscribe({
             next: () => {
               this.dialog.success('Éxito', `Candidato ${action}do correctamente`);
-              if (this.selectedElectionId) {
-                this.loadCandidates(this.selectedElectionId);
+              if (this.selectedElectionId()) {
+                this.loadCandidates(this.selectedElectionId()!);
               }
             },
             error: (error) => {
@@ -198,8 +203,8 @@ export class CandidatesManagementComponent implements OnInit {
             this.candidateService.deleteCandidate(candidate.id).subscribe({
               next: () => {
                 this.dialog.success('Éxito', 'Candidato eliminado correctamente');
-                if (this.selectedElectionId) {
-                  this.loadCandidates(this.selectedElectionId);
+                if (this.selectedElectionId()) {
+                  this.loadCandidates(this.selectedElectionId()!);
                 }
               },
               error: (error) => {
