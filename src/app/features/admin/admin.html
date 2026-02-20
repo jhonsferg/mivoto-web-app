@@ -1,1 +1,56 @@
-<router-outlet></router-outlet>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">🗳️</span>
+      <span class="brand-name">MiVoto</span>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        {{ session.currentUser()?.firstName?.charAt(0) }}{{ session.currentUser()?.lastName?.charAt(0) }}
+      </div>
+      <div class="user-info">
+        <span class="user-name">{{ session.currentUser()?.firstName }} {{ session.currentUser()?.lastName }}</span>
+        <span class="user-role">Administrador</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Dashboard</span>
+      </a>
+      <a routerLink="/admin/elections" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">📋</span>
+        <span class="nav-label">Elecciones</span>
+      </a>
+      <a routerLink="/admin/candidates" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Candidatos</span>
+      </a>
+      <a routerLink="/admin/users" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">👥</span>
+        <span class="nav-label">Usuarios</span>
+      </a>
+      <a routerLink="/admin/audit" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">🔍</span>
+        <span class="nav-label">Auditoría</span>
+      </a>
+      <a routerLink="/admin/settings" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-label">Configuración</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" (click)="logout()">
+        <span>🚪</span>
+        <span>Cerrar Sesión</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

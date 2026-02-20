@@ -1,13 +1,15 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { ElectionService } from '@core/services/election.service';
 import { StatisticsService } from '@core/services/statistics.service';
+import { SystemStatistics } from '@core/dtos/statistics.dto';
+import { Election } from '@core/models/election.model';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [DatePipe],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
@@ -16,20 +18,20 @@ export class AdminDashboardComponent implements OnInit {
   private readonly electionService = inject(ElectionService);
   private readonly statisticsService = inject(StatisticsService);
 
-  public systemStats: any = null;
-  public recentElections: any[] = [];
-  public isLoading = true;
+  public readonly systemStats = signal<SystemStatistics | null>(null);
+  public readonly recentElections = signal<Election[]>([]);
+  public readonly isLoading = signal(true);
 
   public ngOnInit(): void {
     this.loadDashboardData();
   }
 
   private loadDashboardData(): void {
-    this.isLoading = true;
+    this.isLoading.set(true);
 
     this.statisticsService.getSystemStatistics().subscribe({
       next: (response) => {
-        this.systemStats = response.data;
+        this.systemStats.set(response.data);
       },
       error: (error) => {
         console.error('Error loading system stats:', error);
@@ -38,12 +40,12 @@ export class AdminDashboardComponent implements OnInit {
 
     this.electionService.getAllElections().subscribe({
       next: (response) => {
-        this.recentElections = (response.data || []).slice(0, 5);
-        this.isLoading = false;
+        this.recentElections.set((response.data || []).slice(0, 5));
+        this.isLoading.set(false);
       },
       error: (error) => {
         console.error('Error loading elections:', error);
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
     });
   }
