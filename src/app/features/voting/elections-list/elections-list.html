@@ -1,7 +1,13 @@
 <div class="elections-container">
   <div class="header">
-    <h1>Elecciones Activas</h1>
-    <p>Selecciona una elección para ver los candidatos y emitir tu voto</p>
+    <div class="header-top">
+      <div></div>
+      <div class="header-titles">
+        <h1>Elecciones Activas</h1>
+        <p>Selecciona una elección para ver los candidatos y emitir tu voto</p>
+      </div>
+      <button class="btn-logout" (click)="logout()">Cerrar sesión</button>
+    </div>
   </div>
 
   @if (isLoading()) {
@@ -12,7 +18,9 @@
 
   @if (!isLoading() && elections().length === 0) {
     <div class="empty-state">
-      <p>No hay elecciones activas en este momento</p>
+      <div class="empty-state-icon">🗳️</div>
+      <h2>Sin elecciones activas</h2>
+      <p>No hay elecciones activas en este momento.<br>Vuelve más tarde para participar.</p>
     </div>
   }
 

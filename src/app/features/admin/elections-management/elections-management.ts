@@ -126,6 +126,24 @@ export class ElectionsManagementComponent implements OnInit {
     }
   }
 
+  public scheduleElection(id: number): void {
+    this.dialog.confirm('Confirmar', '¿Deseas programar esta elección?').subscribe({
+      next: (confirmed) => {
+        if (confirmed) {
+          this.electionService.scheduleElection(id).subscribe({
+            next: () => {
+              this.dialog.success('Éxito', 'Elección programada correctamente');
+              this.loadElections();
+            },
+            error: (error) => {
+              this.dialog.error('Error', error.error?.message || 'No se pudo programar la elección');
+            },
+          });
+        }
+      },
+    });
+  }
+
   public startElection(id: number): void {
     this.dialog.confirm('Confirmar', '¿Deseas iniciar esta elección?').subscribe({
       next: (confirmed) => {

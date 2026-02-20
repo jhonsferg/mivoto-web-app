@@ -58,6 +58,15 @@ export class ElectionService {
     }
 
     /**
+     * Schedules a draft election.
+     * @param id The election ID.
+     * @returns An Observable indicating success.
+     */
+    public scheduleElection(id: number): Observable<ApiResponse<void>> {
+        return this.api.post<ApiResponse<void>>(`${this.BASE_URL}/${id}/schedule`);
+    }
+
+    /**
      * Starts a scheduled election.
      * @param id The election ID.
      * @returns An Observable indicating success.

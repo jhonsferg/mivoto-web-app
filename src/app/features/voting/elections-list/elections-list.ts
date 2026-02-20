@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ElectionService } from '@core/services/election.service';
 import { Election } from '@core/models/election.model';
 import { DialogService } from '@core/services/dialog.service';
+import { AuthService } from '@core/services/auth.service';
 
 @Component({
   selector: 'app-elections-list',
@@ -16,6 +17,7 @@ export class ElectionsListComponent implements OnInit {
   private readonly electionService = inject(ElectionService);
   private readonly router = inject(Router);
   private readonly dialog = inject(DialogService);
+  private readonly auth = inject(AuthService);
 
   public elections = signal<Election[]>([]);
   public isLoading = signal(true);
@@ -57,6 +59,10 @@ export class ElectionsListComponent implements OnInit {
     } else {
       return 'En curso';
     }
+  }
+
+  public logout(): void {
+    this.auth.logout();
   }
 
   public isElectionActive(election: Election): boolean {

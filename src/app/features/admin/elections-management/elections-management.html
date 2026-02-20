@@ -50,6 +50,11 @@
                   <button class="btn-action btn-edit" (click)="openEditModal(election)" title="Editar">
                     ✏️
                   </button>
+                  @if (election.status === 'DRAFT') {
+                    <button class="btn-action btn-schedule" (click)="scheduleElection(election.id)" title="Programar">
+                      📅
+                    </button>
+                  }
                   @if (election.status === 'SCHEDULED') {
                     <button class="btn-action btn-start" (click)="startElection(election.id)" title="Iniciar">
                       ▶️
