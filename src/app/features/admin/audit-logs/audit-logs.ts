@@ -1,5 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuditService } from '@core/services/audit.service';
 import { DialogService } from '@core/services/dialog.service';
@@ -8,7 +8,7 @@ import { AuditAction } from '@core/enums/audit-action.enum';
 @Component({
   selector: 'app-audit-logs',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule, DatePipe],
   templateUrl: './audit-logs.html',
   styleUrl: './audit-logs.scss',
 })
@@ -16,12 +16,12 @@ export class AuditLogsComponent implements OnInit {
   private readonly auditService = inject(AuditService);
   private readonly dialog = inject(DialogService);
 
-  public logs: any[] = [];
-  public isLoading = true;
-  public filterType = 'all';
-  public startDate = '';
-  public endDate = '';
-  public selectedAction = '';
+  public logs = signal<any[]>([]);
+  public isLoading = signal(true);
+  public filterType = signal('all');
+  public startDate = signal('');
+  public endDate = signal('');
+  public selectedAction = signal('');
 
   public actions = [
     { value: 'LOGIN', label: 'Inicio de Sesión' },
@@ -45,9 +45,9 @@ export class AuditLogsComponent implements OnInit {
   }
 
   private loadLogs(): void {
-    this.isLoading = true;
+    this.isLoading.set(true);
 
-    switch (this.filterType) {
+    switch (this.filterType()) {
       case 'security':
         this.loadSecurityLogs();
         break;
@@ -58,18 +58,18 @@ export class AuditLogsComponent implements OnInit {
         this.loadCriticalLogs();
         break;
       case 'action':
-        if (this.selectedAction) {
+        if (this.selectedAction()) {
           this.loadLogsByAction();
         } else {
           this.loadAllLogs();
         }
         break;
       case 'dateRange':
-        if (this.startDate && this.endDate) {
+        if (this.startDate() && this.endDate()) {
           this.loadLogsByDateRange();
         } else {
           this.dialog.error('Error', 'Por favor selecciona un rango de fechas');
-          this.isLoading = false;
+          this.isLoading.set(false);
         }
         break;
       default:
@@ -80,11 +80,11 @@ export class AuditLogsComponent implements OnInit {
   private loadAllLogs(): void {
     this.auditService.getAllAuditLogs().subscribe({
       next: (response) => {
-        this.logs = response.data || [];
-        this.isLoading = false;
+        this.logs.set(response.data || []);
+        this.isLoading.set(false);
       },
       error: (error) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.dialog.error('Error', 'No se pudieron cargar los logs');
         console.error('Error loading logs:', error);
       },
@@ -94,11 +94,11 @@ export class AuditLogsComponent implements OnInit {
   private loadSecurityLogs(): void {
     this.auditService.getSecurityAuditLogs().subscribe({
       next: (response) => {
-        this.logs = response.data || [];
-        this.isLoading = false;
+        this.logs.set(response.data || []);
+        this.isLoading.set(false);
       },
       error: (error) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.dialog.error('Error', 'No se pudieron cargar los logs de seguridad');
         console.error('Error loading security logs:', error);
       },
@@ -108,11 +108,11 @@ export class AuditLogsComponent implements OnInit {
   private loadVotingLogs(): void {
     this.auditService.getVotingAuditLogs().subscribe({
       next: (response) => {
-        this.logs = response.data || [];
-        this.isLoading = false;
+        this.logs.set(response.data || []);
+        this.isLoading.set(false);
       },
       error: (error) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.dialog.error('Error', 'No se pudieron cargar los logs de votación');
         console.error('Error loading voting logs:', error);
       },
@@ -122,11 +122,11 @@ export class AuditLogsComponent implements OnInit {
   private loadCriticalLogs(): void {
     this.auditService.getCriticalAuditLogs().subscribe({
       next: (response) => {
-        this.logs = response.data || [];
-        this.isLoading = false;
+        this.logs.set(response.data || []);
+        this.isLoading.set(false);
       },
       error: (error) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.dialog.error('Error', 'No se pudieron cargar los logs críticos');
         console.error('Error loading critical logs:', error);
       },
@@ -134,13 +134,13 @@ export class AuditLogsComponent implements OnInit {
   }
 
   private loadLogsByAction(): void {
-    this.auditService.getAuditTrailByAction(this.selectedAction as AuditAction).subscribe({
+    this.auditService.getAuditTrailByAction(this.selectedAction() as AuditAction).subscribe({
       next: (response) => {
-        this.logs = response.data || [];
-        this.isLoading = false;
+        this.logs.set(response.data || []);
+        this.isLoading.set(false);
       },
       error: (error) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.dialog.error('Error', 'No se pudieron cargar los logs');
         console.error('Error loading logs by action:', error);
       },
@@ -148,13 +148,13 @@ export class AuditLogsComponent implements OnInit {
   }
 
   private loadLogsByDateRange(): void {
-    this.auditService.getAuditTrailByDateRange(this.startDate, this.endDate).subscribe({
+    this.auditService.getAuditTrailByDateRange(this.startDate(), this.endDate()).subscribe({
       next: (response) => {
-        this.logs = response.data || [];
-        this.isLoading = false;
+        this.logs.set(response.data || []);
+        this.isLoading.set(false);
       },
       error: (error) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.dialog.error('Error', 'No se pudieron cargar los logs');
         console.error('Error loading logs by date range:', error);
       },

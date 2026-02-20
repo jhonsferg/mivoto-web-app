@@ -1,70 +1,74 @@
 <div class="confirmation-container">
-  <div *ngIf="voteData" class="confirmation-card">
-    <div class="success-icon">✓</div>
+  @if (voteData()) {
+    <div class="confirmation-card">
+      <div class="success-icon">✓</div>
 
-    <h1>¡Voto Registrado Exitosamente!</h1>
-    <p class="subtitle">Tu voto ha sido registrado de forma segura</p>
+      <h1>¡Voto Registrado Exitosamente!</h1>
+      <p class="subtitle">Tu voto ha sido registrado de forma segura</p>
 
-    <div class="vote-details">
-      <div class="detail-item">
-        <span class="label">ID de Voto:</span>
-        <span class="value">{{ voteData.id }}</span>
+      <div class="vote-details">
+        <div class="detail-item">
+          <span class="label">ID de Voto:</span>
+          <span class="value">{{ voteData()!.id }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Elección:</span>
+          <span class="value">{{ voteData()!.electionId }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Fecha y Hora:</span>
+          <span class="value">{{ voteData()!.votedAt | date: 'dd/MM/yyyy HH:mm:ss' }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Estado:</span>
+          <span class="value status">{{ voteData()!.status }}</span>
+        </div>
       </div>
 
-      <div class="detail-item">
-        <span class="label">Elección:</span>
-        <span class="value">{{ voteData.electionId }}</span>
+      <div class="hash-section">
+        <h3>Hash de Verificación</h3>
+        <p class="hash-description">
+          Guarda este código para verificar tu voto posteriormente
+        </p>
+
+        <div class="hash-container">
+          <code class="hash-code">{{ voteData()!.voteHash }}</code>
+          <button class="btn-copy" (click)="copyVoteHash()">
+            {{ copied() ? '✓ Copiado' : 'Copiar' }}
+          </button>
+        </div>
+
+        @if (voteData()!.verificationCode) {
+          <div class="verification-code">
+            <p class="label">Código de Verificación:</p>
+            <p class="code">{{ voteData()!.verificationCode }}</p>
+          </div>
+        }
       </div>
 
-      <div class="detail-item">
-        <span class="label">Fecha y Hora:</span>
-        <span class="value">{{ voteData.votedAt | date: 'dd/MM/yyyy HH:mm:ss' }}</span>
-      </div>
-
-      <div class="detail-item">
-        <span class="label">Estado:</span>
-        <span class="value status">{{ voteData.status }}</span>
-      </div>
-    </div>
-
-    <div class="hash-section">
-      <h3>Hash de Verificación</h3>
-      <p class="hash-description">
-        Guarda este código para verificar tu voto posteriormente
-      </p>
-
-      <div class="hash-container">
-        <code class="hash-code">{{ voteData.voteHash }}</code>
-        <button class="btn-copy" (click)="copyVoteHash()">
-          {{ copied ? '✓ Copiado' : 'Copiar' }}
+      <div class="actions">
+        <button class="btn-primary" (click)="verifyVote()">
+          Verificar Mi Voto
+        </button>
+        <button class="btn-secondary" (click)="goToHistory()">
+          Ver Historial
+        </button>
+        <button class="btn-secondary" (click)="goToElections()">
+          Volver a Elecciones
         </button>
       </div>
 
-      <div *ngIf="voteData.verificationCode" class="verification-code">
-        <p class="label">Código de Verificación:</p>
-        <p class="code">{{ voteData.verificationCode }}</p>
+      <div class="warning-box">
+        <p>⚠️ Importante:</p>
+        <ul>
+          <li>Guarda el hash de verificación en un lugar seguro</li>
+          <li>Puedes verificar tu voto en cualquier momento usando este hash</li>
+          <li>No compartas este código con nadie</li>
+        </ul>
       </div>
     </div>
-
-    <div class="actions">
-      <button class="btn-primary" (click)="verifyVote()">
-        Verificar Mi Voto
-      </button>
-      <button class="btn-secondary" (click)="goToHistory()">
-        Ver Historial
-      </button>
-      <button class="btn-secondary" (click)="goToElections()">
-        Volver a Elecciones
-      </button>
-    </div>
-
-    <div class="warning-box">
-      <p>⚠️ Importante:</p>
-      <ul>
-        <li>Guarda el hash de verificación en un lugar seguro</li>
-        <li>Puedes verificar tu voto en cualquier momento usando este hash</li>
-        <li>No compartas este código con nadie</li>
-      </ul>
-    </div>
-  </div>
+  }
 </div>

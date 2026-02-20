@@ -1,5 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService, CreateUserRequest, UpdateUserRequest } from '@core/services/user.service';
 import { DialogService } from '@core/services/dialog.service';
@@ -8,7 +8,7 @@ import { User } from '@core/models/user.model';
 @Component({
   selector: 'app-users-management',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule, DatePipe],
   templateUrl: './users-management.html',
   styleUrl: './users-management.scss',
 })
@@ -17,11 +17,11 @@ export class UsersManagementComponent implements OnInit {
   private readonly userService = inject(UserService);
   private readonly dialog = inject(DialogService);
 
-  public users: User[] = [];
-  public isLoading = true;
-  public showCreateModal = false;
-  public showEditModal = false;
-  public selectedUser: User | null = null;
+  public users = signal<User[]>([]);
+  public isLoading = signal(true);
+  public showCreateModal = signal(false);
+  public showEditModal = signal(false);
+  public selectedUser = signal<User | null>(null);
 
   public userForm = this.fb.group({
     documentNumber: ['', [Validators.required, Validators.maxLength(20)]],
@@ -45,14 +45,14 @@ export class UsersManagementComponent implements OnInit {
   }
 
   private loadUsers(): void {
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.userService.getAllUsers().subscribe({
       next: (response) => {
-        this.users = response.data || [];
-        this.isLoading = false;
+        this.users.set(response.data || []);
+        this.isLoading.set(false);
       },
       error: (error) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.dialog.error('Error', 'No se pudieron cargar los usuarios');
         console.error('Error loading users:', error);
       },
@@ -66,11 +66,11 @@ export class UsersManagementComponent implements OnInit {
     });
     this.userForm.get('password')?.setValidators([Validators.required, Validators.minLength(6)]);
     this.userForm.get('password')?.updateValueAndValidity();
-    this.showCreateModal = true;
+    this.showCreateModal.set(true);
   }
 
   public closeCreateModal(): void {
-    this.showCreateModal = false;
+    this.showCreateModal.set(false);
     this.userForm.reset();
   }
 
@@ -93,7 +93,7 @@ export class UsersManagementComponent implements OnInit {
   }
 
   public openEditModal(user: User): void {
-    this.selectedUser = user;
+    this.selectedUser.set(user);
     this.userForm.patchValue({
       documentNumber: user.documentNumber,
       firstName: user.firstName,
@@ -104,17 +104,17 @@ export class UsersManagementComponent implements OnInit {
     });
     this.userForm.get('password')?.clearValidators();
     this.userForm.get('password')?.updateValueAndValidity();
-    this.showEditModal = true;
+    this.showEditModal.set(true);
   }
 
   public closeEditModal(): void {
-    this.showEditModal = false;
-    this.selectedUser = null;
+    this.showEditModal.set(false);
+    this.selectedUser.set(null);
     this.userForm.reset();
   }
 
   public updateUser(): void {
-    if (this.userForm.valid && this.selectedUser) {
+    if (this.userForm.valid && this.selectedUser()) {
       const request: UpdateUserRequest = {
         documentNumber: this.userForm.value.documentNumber!,
         firstName: this.userForm.value.firstName!,
@@ -124,7 +124,7 @@ export class UsersManagementComponent implements OnInit {
         active: this.userForm.value.active!,
       };
 
-      this.userService.updateUser(this.selectedUser.id, request).subscribe({
+      this.userService.updateUser(this.selectedUser()!.id, request).subscribe({
         next: () => {
           this.dialog.success('Éxito', 'Usuario actualizado correctamente');
           this.closeEditModal();

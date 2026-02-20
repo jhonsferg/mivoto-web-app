@@ -1,13 +1,13 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { KeyValuePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { ElectionService } from '@core/services/election.service';
 import { DialogService } from '@core/services/dialog.service';
 
 @Component({
   selector: 'app-election-results',
   standalone: true,
-  imports: [CommonModule],
+  imports: [KeyValuePipe],
   templateUrl: './election-results.html',
   styleUrl: './election-results.scss',
 })
@@ -17,9 +17,9 @@ export class ElectionResultsComponent implements OnInit {
   private readonly electionService = inject(ElectionService);
   private readonly dialog = inject(DialogService);
 
-  public electionResults: any = null;
-  public statistics: any = null;
-  public isLoading = true;
+  public electionResults = signal<any>(null);
+  public statistics = signal<any>(null);
+  public isLoading = signal(true);
 
   public ngOnInit(): void {
     const electionId = Number(this.route.snapshot.paramMap.get('id'));
@@ -30,14 +30,14 @@ export class ElectionResultsComponent implements OnInit {
   }
 
   private loadResults(electionId: number): void {
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.electionService.getElectionResults(electionId).subscribe({
       next: (response) => {
-        this.electionResults = response.data;
-        this.isLoading = false;
+        this.electionResults.set(response.data);
+        this.isLoading.set(false);
       },
       error: (error) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.dialog.error('Error', 'No se pudieron cargar los resultados');
         console.error('Error loading results:', error);
       },
@@ -47,7 +47,7 @@ export class ElectionResultsComponent implements OnInit {
   private loadStatistics(electionId: number): void {
     this.electionService.getElectionStatistics(electionId).subscribe({
       next: (response) => {
-        this.statistics = response.data;
+        this.statistics.set(response.data);
       },
       error: (error) => {
         console.error('Error loading statistics:', error);

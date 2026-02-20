@@ -1,4 +1,4 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import { Component, OnDestroy, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -42,7 +42,7 @@ export class LoginComponent implements OnDestroy {
     rememberMe: [false]
   });
 
-  public isLoading = false;
+  public isLoading = signal(false);
 
   public ngOnDestroy(): void {
     if (this.dialogSubscription) {
@@ -58,13 +58,13 @@ export class LoginComponent implements OnDestroy {
         this.dialogSubscription = null;
       }
 
-      this.isLoading = true;
+      this.isLoading.set(true);
 
       const { username, password } = this.loginForm.value;
 
       this.auth.login({ username: username!, password: password! }).subscribe({
         next: (data) => {
-          this.isLoading = false;
+          this.isLoading.set(false);
           if (data.user.role === ROLES.ADMIN) {
             this.router.navigate(['/', APP_ROUTES.ADMIN]);
           } else {
@@ -72,7 +72,7 @@ export class LoginComponent implements OnDestroy {
           }
         },
         error: (err) => {
-          this.isLoading = false;
+          this.isLoading.set(false);
           console.error('Login error', err);
           this.dialogSubscription = this.dialog.error(
             this.translate.instant('AUTH.LOGIN.ERROR.TITLE'),

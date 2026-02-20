@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -28,19 +28,19 @@ export class ForgotPasswordComponent {
         email: ['', [Validators.required, Validators.email]]
     });
 
-    public isLoading = false;
-    public error = '';
-    public successMessage = '';
+    public isLoading = signal(false);
+    public error = signal('');
+    public successMessage = signal('');
 
     public onSubmit(): void {
         if (this.forgotForm.valid) {
-            this.isLoading = true;
-            this.error = '';
+            this.isLoading.set(true);
+            this.error.set('');
 
             // Simulate API call
             setTimeout(() => {
-                this.isLoading = false;
-                this.successMessage = this.translate.instant('AUTH.FORGOT_PASSWORD.SUCCESS_MESSAGE');
+                this.isLoading.set(false);
+                this.successMessage.set(this.translate.instant('AUTH.FORGOT_PASSWORD.SUCCESS_MESSAGE'));
             }, 1500);
 
         } else {

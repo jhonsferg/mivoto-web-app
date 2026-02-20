@@ -1,6 +1,6 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { ElectionService } from '@core/services/election.service';
 import { Election } from '@core/models/election.model';
 import { DialogService } from '@core/services/dialog.service';
@@ -8,7 +8,7 @@ import { DialogService } from '@core/services/dialog.service';
 @Component({
   selector: 'app-elections-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [DatePipe],
   templateUrl: './elections-list.html',
   styleUrl: './elections-list.scss',
 })
@@ -17,25 +17,25 @@ export class ElectionsListComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly dialog = inject(DialogService);
 
-  public elections: Election[] = [];
-  public isLoading = true;
-  public errorMessage = '';
+  public elections = signal<Election[]>([]);
+  public isLoading = signal(true);
+  public errorMessage = signal('');
 
   public ngOnInit(): void {
     this.loadActiveElections();
   }
 
   private loadActiveElections(): void {
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.electionService.getActiveElections().subscribe({
       next: (response) => {
-        this.elections = response.data || [];
-        this.isLoading = false;
+        this.elections.set(response.data || []);
+        this.isLoading.set(false);
       },
       error: (error) => {
-        this.errorMessage = 'Error al cargar las elecciones activas';
-        this.isLoading = false;
-        this.dialog.error('Error', this.errorMessage);
+        this.errorMessage.set('Error al cargar las elecciones activas');
+        this.isLoading.set(false);
+        this.dialog.error('Error', this.errorMessage());
         console.error('Error loading elections:', error);
       },
     });

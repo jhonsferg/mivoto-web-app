@@ -1,5 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '@core/services/auth.service';
 import { SessionService } from '@core/services/session.service';
@@ -9,7 +9,7 @@ import { User } from '@core/models/user.model';
 @Component({
   selector: 'app-user-settings',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule, DatePipe],
   templateUrl: './user-settings.html',
   styleUrl: './user-settings.scss',
 })
@@ -19,9 +19,9 @@ export class UserSettingsComponent implements OnInit {
   private readonly sessionService = inject(SessionService);
   private readonly dialog = inject(DialogService);
 
-  public currentUser: User | null = null;
-  public isLoadingProfile = true;
-  public isChangingPassword = false;
+  public currentUser = signal<User | null>(null);
+  public isLoadingProfile = signal(true);
+  public isChangingPassword = signal(false);
 
   public passwordForm = this.fb.group(
     {
@@ -37,14 +37,14 @@ export class UserSettingsComponent implements OnInit {
   }
 
   private loadUserProfile(): void {
-    this.isLoadingProfile = true;
+    this.isLoadingProfile.set(true);
     this.authService.me().subscribe({
       next: (response) => {
-        this.currentUser = response.data;
-        this.isLoadingProfile = false;
+        this.currentUser.set(response.data);
+        this.isLoadingProfile.set(false);
       },
       error: (error) => {
-        this.isLoadingProfile = false;
+        this.isLoadingProfile.set(false);
         console.error('Error loading user profile:', error);
       },
     });
@@ -64,7 +64,7 @@ export class UserSettingsComponent implements OnInit {
 
   public changePassword(): void {
     if (this.passwordForm.valid) {
-      this.isChangingPassword = true;
+      this.isChangingPassword.set(true);
 
       const request = {
         currentPassword: this.passwordForm.value.oldPassword!,
@@ -74,12 +74,12 @@ export class UserSettingsComponent implements OnInit {
 
       this.authService.changePassword(request).subscribe({
         next: () => {
-          this.isChangingPassword = false;
+          this.isChangingPassword.set(false);
           this.dialog.success('Éxito', 'Contraseña actualizada correctamente');
           this.passwordForm.reset();
         },
         error: (error) => {
-          this.isChangingPassword = false;
+          this.isChangingPassword.set(false);
           this.dialog.error(
             'Error',
             error.error?.message || 'No se pudo actualizar la contraseña',

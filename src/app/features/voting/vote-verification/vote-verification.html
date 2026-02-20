@@ -11,9 +11,10 @@
         <input
           type="text"
           id="voteHash"
-          [(ngModel)]="voteHash"
+          [ngModel]="voteHash()"
+          (ngModelChange)="voteHash.set($event)"
           placeholder="Ingresa el hash de 64 caracteres..."
-          [disabled]="isVerifying"
+          [disabled]="isVerifying()"
         />
       </div>
 
@@ -21,53 +22,55 @@
         <button
           class="btn-verify"
           (click)="verifyVote()"
-          [disabled]="isVerifying || !voteHash.trim()"
+          [disabled]="isVerifying() || !voteHash().trim()"
         >
-          {{ isVerifying ? 'Verificando...' : 'Verificar Voto' }}
+          {{ isVerifying() ? 'Verificando...' : 'Verificar Voto' }}
         </button>
-        <button class="btn-clear" (click)="clearForm()" [disabled]="isVerifying">Limpiar</button>
+        <button class="btn-clear" (click)="clearForm()" [disabled]="isVerifying()">Limpiar</button>
         <button class="btn-back" (click)="goBack()">Volver</button>
       </div>
 
-      <div *ngIf="verificationError" class="error-message">
-        {{ verificationError }}
-      </div>
+      @if (verificationError()) {
+        <div class="error-message">{{ verificationError() }}</div>
+      }
     </div>
 
-    <div *ngIf="voteRecord" class="verification-result">
-      <div class="success-icon">✓</div>
-      <h2>Voto Verificado Exitosamente</h2>
+    @if (voteRecord()) {
+      <div class="verification-result">
+        <div class="success-icon">✓</div>
+        <h2>Voto Verificado Exitosamente</h2>
 
-      <div class="vote-details">
-        <div class="detail-item">
-          <span class="label">Elección:</span>
-          <span class="value">{{ voteRecord.electionTitle }}</span>
+        <div class="vote-details">
+          <div class="detail-item">
+            <span class="label">Elección:</span>
+            <span class="value">{{ voteRecord()!.electionTitle }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="label">Candidato:</span>
+            <span class="value">{{ voteRecord()!.candidateName }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="label">Fecha y Hora:</span>
+            <span class="value">{{ voteRecord()!.timestamp | date: 'dd/MM/yyyy HH:mm:ss' }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="label">Hash:</span>
+            <span class="value hash">{{ voteRecord()!.voteHash }}</span>
+          </div>
         </div>
 
-        <div class="detail-item">
-          <span class="label">Candidato:</span>
-          <span class="value">{{ voteRecord.candidateName }}</span>
-        </div>
-
-        <div class="detail-item">
-          <span class="label">Fecha y Hora:</span>
-          <span class="value">{{ voteRecord.timestamp | date: 'dd/MM/yyyy HH:mm:ss' }}</span>
-        </div>
-
-        <div class="detail-item">
-          <span class="label">Hash:</span>
-          <span class="value hash">{{ voteRecord.voteHash }}</span>
+        <div class="info-box">
+          <p class="info-title">✓ Tu voto es válido</p>
+          <p class="info-text">
+            Este hash confirma que tu voto fue registrado de forma segura y no ha sido alterado. La
+            información del voto está encriptada y es anónima.
+          </p>
         </div>
       </div>
-
-      <div class="info-box">
-        <p class="info-title">✓ Tu voto es válido</p>
-        <p class="info-text">
-          Este hash confirma que tu voto fue registrado de forma segura y no ha sido alterado. La
-          información del voto está encriptada y es anónima.
-        </p>
-      </div>
-    </div>
+    }
 
     <div class="help-section">
       <h3>¿Cómo verificar mi voto?</h3>

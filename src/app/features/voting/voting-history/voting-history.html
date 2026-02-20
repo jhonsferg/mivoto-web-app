@@ -5,67 +5,75 @@
     <p>Consulta el historial completo de tus votos registrados</p>
   </div>
 
-  <div *ngIf="isLoading" class="loading">
-    <p>Cargando historial...</p>
-  </div>
-
-  <div *ngIf="!isLoading && voteRecords.length === 0" class="empty-state">
-    <div class="empty-icon">📋</div>
-    <p>No tienes votos registrados aún</p>
-    <button class="btn-primary" (click)="goBack()">Ver Elecciones</button>
-  </div>
-
-  <div *ngIf="!isLoading && voteRecords.length > 0" class="records-list">
-    <div class="stat-card">
-      <span class="stat-value">{{ voteRecords.length }}</span>
-      <span class="stat-label">Votos Emitidos</span>
+  @if (isLoading()) {
+    <div class="loading">
+      <p>Cargando historial...</p>
     </div>
+  }
 
-    <div class="records-grid">
-      <div *ngFor="let record of voteRecords; let i = index" class="record-card">
-        <div class="record-header">
-          <div class="record-id">
-            <span class="label">Registro #</span>
-            <span class="value">{{ i + 1 }}</span>
-          </div>
-          <div class="verification-badge verified">
-            ✓ Verificado
-          </div>
-        </div>
+  @if (!isLoading() && voteRecords().length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <p>No tienes votos registrados aún</p>
+      <button class="btn-primary" (click)="goBack()">Ver Elecciones</button>
+    </div>
+  }
 
-        <div class="record-details">
-          <div class="detail-row">
-            <span class="label">Elección:</span>
-            <span class="value">{{ record.electionTitle }}</span>
-          </div>
+  @if (!isLoading() && voteRecords().length > 0) {
+    <div class="records-list">
+      <div class="stat-card">
+        <span class="stat-value">{{ voteRecords().length }}</span>
+        <span class="stat-label">Votos Emitidos</span>
+      </div>
 
-          <div class="detail-row">
-            <span class="label">Candidato:</span>
-            <span class="value">{{ record.candidateName }}</span>
-          </div>
+      <div class="records-grid">
+        @for (record of voteRecords(); track record.voteHash; let i = $index) {
+          <div class="record-card">
+            <div class="record-header">
+              <div class="record-id">
+                <span class="label">Registro #</span>
+                <span class="value">{{ i + 1 }}</span>
+              </div>
+              <div class="verification-badge verified">
+                ✓ Verificado
+              </div>
+            </div>
 
-          <div class="detail-row">
-            <span class="label">Fecha:</span>
-            <span class="value">{{ record.timestamp | date: 'dd/MM/yyyy HH:mm:ss' }}</span>
-          </div>
-        </div>
+            <div class="record-details">
+              <div class="detail-row">
+                <span class="label">Elección:</span>
+                <span class="value">{{ record.electionTitle }}</span>
+              </div>
 
-        <div class="hash-section">
-          <div class="hash-label">Hash de Verificación:</div>
-          <div class="hash-container">
-            <code class="hash-code">{{ record.voteHash }}</code>
-          </div>
-        </div>
+              <div class="detail-row">
+                <span class="label">Candidato:</span>
+                <span class="value">{{ record.candidateName }}</span>
+              </div>
 
-        <div class="record-actions">
-          <button class="btn-verify" (click)="verifyVote(record.voteHash)">
-            Verificar
-          </button>
-          <button class="btn-copy" (click)="copyHash(record.voteHash)">
-            Copiar Hash
-          </button>
-        </div>
+              <div class="detail-row">
+                <span class="label">Fecha:</span>
+                <span class="value">{{ record.timestamp | date: 'dd/MM/yyyy HH:mm:ss' }}</span>
+              </div>
+            </div>
+
+            <div class="hash-section">
+              <div class="hash-label">Hash de Verificación:</div>
+              <div class="hash-container">
+                <code class="hash-code">{{ record.voteHash }}</code>
+              </div>
+            </div>
+
+            <div class="record-actions">
+              <button class="btn-verify" (click)="verifyVote(record.voteHash)">
+                Verificar
+              </button>
+              <button class="btn-copy" (click)="copyHash(record.voteHash)">
+                Copiar Hash
+              </button>
+            </div>
+          </div>
+        }
       </div>
     </div>
-  </div>
+  }
 </div>

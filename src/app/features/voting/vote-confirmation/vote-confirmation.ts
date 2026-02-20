@@ -1,38 +1,38 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { VoteResponse } from '@core/dtos/voting.dto';
 
 @Component({
   selector: 'app-vote-confirmation',
   standalone: true,
-  imports: [CommonModule],
+  imports: [DatePipe],
   templateUrl: './vote-confirmation.html',
   styleUrl: './vote-confirmation.scss',
 })
 export class VoteConfirmationComponent implements OnInit {
-  public voteData: VoteResponse | null = null;
-  public copied = false;
+  public voteData = signal<VoteResponse | null>(null);
+  public copied = signal(false);
 
   constructor(private router: Router) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state) {
-      this.voteData = navigation.extras.state['voteData'];
+      this.voteData.set(navigation.extras.state['voteData']);
     }
   }
 
   public ngOnInit(): void {
-    if (!this.voteData) {
+    if (!this.voteData()) {
       this.router.navigate(['/voting']);
     }
   }
 
   public copyVoteHash(): void {
-    if (this.voteData?.voteHash) {
-      navigator.clipboard.writeText(this.voteData.voteHash).then(() => {
-        this.copied = true;
+    if (this.voteData()?.voteHash) {
+      navigator.clipboard.writeText(this.voteData()!.voteHash).then(() => {
+        this.copied.set(true);
         setTimeout(() => {
-          this.copied = false;
+          this.copied.set(false);
         }, 2000);
       });
     }
@@ -47,9 +47,9 @@ export class VoteConfirmationComponent implements OnInit {
   }
 
   public verifyVote(): void {
-    if (this.voteData?.voteHash) {
+    if (this.voteData()?.voteHash) {
       this.router.navigate(['/voting/verify'], {
-        queryParams: { hash: this.voteData.voteHash },
+        queryParams: { hash: this.voteData()!.voteHash },
       });
     }
   }

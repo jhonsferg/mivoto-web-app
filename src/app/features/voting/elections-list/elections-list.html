@@ -4,47 +4,51 @@
     <p>Selecciona una elección para ver los candidatos y emitir tu voto</p>
   </div>
 
-  <div *ngIf="isLoading" class="loading">
-    <p>Cargando elecciones...</p>
-  </div>
-
-  <div *ngIf="!isLoading && elections.length === 0" class="empty-state">
-    <p>No hay elecciones activas en este momento</p>
-  </div>
-
-  <div *ngIf="!isLoading && elections.length > 0" class="elections-grid">
-    <div
-      *ngFor="let election of elections"
-      class="election-card"
-      [class.active]="isElectionActive(election)"
-      (click)="viewElectionDetails(election.id)"
-    >
-      <div class="election-header">
-        <h2>{{ election.title }}</h2>
-        <span class="status" [class.active]="isElectionActive(election)">
-          {{ getElectionStatus(election) }}
-        </span>
-      </div>
-
-      <p class="description">{{ election.description }}</p>
-
-      <div class="election-dates">
-        <div class="date-item">
-          <span class="label">Inicio:</span>
-          <span class="value">{{ election.startDate | date: 'dd/MM/yyyy HH:mm' }}</span>
-        </div>
-        <div class="date-item">
-          <span class="label">Fin:</span>
-          <span class="value">{{ election.endDate | date: 'dd/MM/yyyy HH:mm' }}</span>
-        </div>
-      </div>
-
-      <button
-        class="btn-vote"
-        [disabled]="!isElectionActive(election)"
-      >
-        {{ isElectionActive(election) ? 'Ver Candidatos' : 'No Disponible' }}
-      </button>
+  @if (isLoading()) {
+    <div class="loading">
+      <p>Cargando elecciones...</p>
     </div>
-  </div>
+  }
+
+  @if (!isLoading() && elections().length === 0) {
+    <div class="empty-state">
+      <p>No hay elecciones activas en este momento</p>
+    </div>
+  }
+
+  @if (!isLoading() && elections().length > 0) {
+    <div class="elections-grid">
+      @for (election of elections(); track election.id) {
+        <div
+          class="election-card"
+          [class.active]="isElectionActive(election)"
+          (click)="viewElectionDetails(election.id)"
+        >
+          <div class="election-header">
+            <h2>{{ election.title }}</h2>
+            <span class="status" [class.active]="isElectionActive(election)">
+              {{ getElectionStatus(election) }}
+            </span>
+          </div>
+
+          <p class="description">{{ election.description }}</p>
+
+          <div class="election-dates">
+            <div class="date-item">
+              <span class="label">Inicio:</span>
+              <span class="value">{{ election.startDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="date-item">
+              <span class="label">Fin:</span>
+              <span class="value">{{ election.endDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+
+          <button class="btn-vote" [disabled]="!isElectionActive(election)">
+            {{ isElectionActive(election) ? 'Ver Candidatos' : 'No Disponible' }}
+          </button>
+        </div>
+      }
+    </div>
+  }
 </div>
