@@ -1,62 +1,154 @@
 <div class="results-container">
+
+  <!-- Export overlay -->
+  @if (isExporting()) {
+    <div class="export-overlay">
+      <div class="export-overlay-card">
+        <div class="overlay-spinner"></div>
+        <p class="overlay-title">Generando archivo Excel</p>
+        <p class="overlay-subtitle">Por favor espere…</p>
+      </div>
+    </div>
+  }
+
+  <!-- Header -->
   <div class="header">
     <button class="btn-back" (click)="goBack()">← Volver al Panel</button>
-    <h1>Resultados de Elección</h1>
+    <div class="header-top">
+      <h1>Resultados de Elección</h1>
+      @if (!isLoading() && electionResults()) {
+        <button class="btn-export" (click)="exportToExcel()" [disabled]="isExporting()">
+          ⬇ Exportar a Excel
+        </button>
+      }
+    </div>
   </div>
 
   @if (isLoading()) {
     <div class="loading">
-      <p>Cargando resultados...</p>
+      <p>Cargando resultados…</p>
     </div>
   }
 
   @if (!isLoading() && electionResults()) {
     <div class="results-content">
+
+      <!-- Election Info Card -->
       <div class="election-info-card">
-        <h2>{{ electionResults().electionTitle }}</h2>
+        <div class="election-header">
+          <h2>{{ electionResults()!.electionTitle }}</h2>
+          @if (electionDetails()) {
+            <span class="status-badge status-{{ electionDetails()!.status.toLowerCase() }}">
+              {{ getStatusLabel(electionDetails()!.status) }}
+            </span>
+          }
+        </div>
+
+        @if (electionDetails()?.description) {
+          <p class="election-description">{{ electionDetails()!.description }}</p>
+        }
+
+        @if (electionDetails()) {
+          <div class="election-dates">
+            <div class="date-item">
+              <span class="date-icon">📅</span>
+              <span class="date-label">Inicio</span>
+              <span class="date-value">{{ electionDetails()!.startDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="date-divider"></div>
+            <div class="date-item">
+              <span class="date-icon">🏁</span>
+              <span class="date-label">Cierre</span>
+              <span class="date-value">{{ electionDetails()!.endDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+
+          <div class="election-config">
+            <span class="config-badge">
+              🗳️ Máx. {{ electionDetails()!.maxVotesPerUser }}
+              {{ electionDetails()!.maxVotesPerUser !== 1 ? 'votos' : 'voto' }}
+            </span>
+            @if (electionDetails()!.allowsBlankVote) {
+              <span class="config-badge">✅ Voto en blanco</span>
+            }
+            @if (electionDetails()!.requiresVerification) {
+              <span class="config-badge">🔒 Verificación requerida</span>
+            }
+          </div>
+        }
+
         <div class="total-votes">
           <span class="label">Total de Votos:</span>
-          <span class="value">{{ electionResults().totalVotes }}</span>
+          <span class="value">{{ electionResults()!.totalVotes }}</span>
         </div>
       </div>
 
+      <!-- Winner Banner -->
+      @if (electionResults()!.results.length > 0) {
+        <div class="winner-banner">
+          <div class="winner-crown">👑</div>
+          <div class="winner-info">
+            <span class="winner-label">GANADOR</span>
+            <span class="winner-name">{{ electionResults()!.results[0].candidateName }}</span>
+            <span class="winner-party">{{ electionResults()!.results[0].party }}</span>
+          </div>
+          <div class="winner-votes">
+            <span class="winner-votes-value">{{ electionResults()!.results[0].votes }}</span>
+            <span class="winner-votes-label">
+              votos · {{ electionResults()!.results[0].percentage.toFixed(2) }}%
+            </span>
+          </div>
+        </div>
+      }
+
+      <!-- Statistics Cards -->
       @if (statistics()) {
         <div class="statistics-cards">
           <div class="stat-card">
             <div class="stat-icon">📊</div>
             <div class="stat-info">
-              <span class="stat-value">{{ statistics().totalCandidates }}</span>
+              <span class="stat-value">{{ statistics()!.totalCandidates }}</span>
               <span class="stat-label">Candidatos</span>
             </div>
           </div>
 
           <div class="stat-card">
-            <div class="stat-icon">👑</div>
+            <div class="stat-icon">🗳️</div>
             <div class="stat-info">
-              <span class="stat-value">{{ statistics().leadingCandidate?.name || 'N/A' }}</span>
-              <span class="stat-label">Candidato Líder</span>
+              <span class="stat-value">{{ electionResults()!.totalVotes }}</span>
+              <span class="stat-label">Votos Emitidos</span>
             </div>
           </div>
 
           <div class="stat-card">
             <div class="stat-icon">📈</div>
             <div class="stat-info">
-              <span class="stat-value">{{ statistics().participationRate?.toFixed(2) || 0 }}%</span>
+              <span class="stat-value">{{ statistics()!.participationRate.toFixed(2) }}%</span>
               <span class="stat-label">Participación</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">🥇</div>
+            <div class="stat-info">
+              <span class="stat-value">{{ statistics()!.leadingCandidate?.name || 'N/A' }}</span>
+              <span class="stat-label">Candidato Líder</span>
             </div>
           </div>
         </div>
       }
 
+      <!-- Results by Candidate -->
       <div class="results-list">
         <h3>Resultados por Candidato</h3>
-        @if (electionResults().results.length === 0) {
+
+        @if (electionResults()!.results.length === 0) {
           <div class="empty-state">
             <p>No hay resultados disponibles aún</p>
           </div>
         }
 
-        @for (result of electionResults().results; track result.candidateId; let i = $index) {
+        @for (result of electionResults()!.results; track result.candidateId; let i = $index) {
           <div class="result-card" [class.winner]="i === 0">
             <div class="rank">
               <span class="rank-number">{{ i + 1 }}</span>
@@ -86,26 +178,38 @@
               </div>
 
               <div class="percentage-value" [class]="getPercentageClass(result.percentage)">
-                {{ result.percentage?.toFixed(2) }}%
+                {{ result.percentage.toFixed(2) }}%
               </div>
             </div>
           </div>
         }
       </div>
 
+      <!-- Votes by Party -->
       @if (statistics()?.votesByParty) {
         <div class="party-summary">
           <h3>Votos por Partido</h3>
           <div class="party-list">
-            @for (party of (statistics().votesByParty | keyvalue); track party.key) {
+            @for (party of (statistics()!.votesByParty! | keyvalue); track party.key) {
               <div class="party-item">
                 <span class="party-name">{{ party.key }}</span>
+                <div class="party-bar-wrap">
+                  <div
+                    class="party-bar"
+                    [style.width.%]="
+                      electionResults()!.totalVotes
+                        ? (+party.value / electionResults()!.totalVotes) * 100
+                        : 0
+                    "
+                  ></div>
+                </div>
                 <span class="party-votes">{{ party.value }} votos</span>
               </div>
             }
           </div>
         </div>
       }
+
     </div>
   }
 </div>

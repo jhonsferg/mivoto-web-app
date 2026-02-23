@@ -19,12 +19,24 @@ export interface UpdateElectionRequest {
 }
 
 /**
+ * Individual candidate result within an election.
+ */
+export interface CandidateResult {
+    candidateId: number;
+    candidateName: string;
+    party: string;
+    number: number;
+    votes: number;
+    percentage: number;
+}
+
+/**
  * Data transfer object representing election results.
  */
 export interface ElectionResultsDto {
     electionTitle: string;
     totalVotes: number;
-    results: { [candidateName: string]: number };
+    results: CandidateResult[];
     winner: string;
 }
 
@@ -34,5 +46,10 @@ export interface ElectionResultsDto {
 export interface ElectionStatisticsDto {
     totalVotes: number;
     participationRate: number;
-    // Add other fields as per backend response
+    totalCandidates: number;
+    leadingCandidate?: {
+        name: string;
+        votes?: number;
+    };
+    votesByParty?: { [party: string]: number };
 }
