@@ -1,0 +1,63 @@
+<div class="elections-management-container">
+  <div class="header">
+    <h1>Elecciones</h1>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading">
+      <p>Cargando elecciones...</p>
+    </div>
+  }
+
+  @if (!isLoading() && elections().length === 0) {
+    <div class="empty-state">
+      <p>No hay elecciones registradas</p>
+    </div>
+  }
+
+  @if (!isLoading() && elections().length > 0) {
+    <div class="elections-table">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Estado</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Fin</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (election of elections(); track election.id) {
+            <tr>
+              <td>{{ election.id }}</td>
+              <td>
+                <div class="election-title">{{ election.title }}</div>
+                <div class="election-description">{{ election.description }}</div>
+              </td>
+              <td>
+                <span class="status-badge" [class]="getStatusClass(election.status)">
+                  {{ getStatusLabel(election.status) }}
+                </span>
+              </td>
+              <td>{{ election.startDate | date: 'dd/MM/yyyy HH:mm' }}</td>
+              <td>{{ election.endDate | date: 'dd/MM/yyyy HH:mm' }}</td>
+              <td>
+                <div class="action-buttons">
+                  @if (election.status === 'CLOSED') {
+                    <button class="btn-action btn-results" (click)="viewResults(election.id)" title="Ver Resultados">
+                      📊 Ver Resultados
+                    </button>
+                  } @else {
+                    <span class="no-actions">—</span>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

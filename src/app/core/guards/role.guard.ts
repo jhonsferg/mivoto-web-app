@@ -20,6 +20,8 @@ export const roleGuard: CanActivateFn = (route, state) => {
         return router.createUrlTree(['/', APP_ROUTES.ADMIN]);
     } else if (currentRole === ROLES.VOTER) {
         return router.createUrlTree(['/', APP_ROUTES.VOTING]);
+    } else if (currentRole === ROLES.SUPERVISOR) {
+        return router.createUrlTree(['/', APP_ROUTES.SUPERVISOR]);
     }
 
     // Fallback (e.g. if no role or invalid)

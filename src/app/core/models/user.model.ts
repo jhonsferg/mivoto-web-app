@@ -4,7 +4,7 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
-  role: 'ADMIN' | 'VOTER';
+  role: 'ADMIN' | 'VOTER' | 'SUPERVISOR';
   documentNumber?: string;
   active?: boolean;
   lastLogin?: string;

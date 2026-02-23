@@ -1,0 +1,40 @@
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">🗳️</span>
+      <span class="brand-name">MiVoto</span>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        {{ session.currentUser()?.firstName?.charAt(0) }}{{ session.currentUser()?.lastName?.charAt(0) }}
+      </div>
+      <div class="user-info">
+        <span class="user-name">{{ session.currentUser()?.firstName }} {{ session.currentUser()?.lastName }}</span>
+        <span class="user-role">Supervisor</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/supervisor" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+        <span class="nav-icon">📋</span>
+        <span class="nav-label">Elecciones</span>
+      </a>
+      <a routerLink="/supervisor/settings" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-label">Configuración</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" (click)="logout()">
+        <span>🚪</span>
+        <span>Cerrar Sesión</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

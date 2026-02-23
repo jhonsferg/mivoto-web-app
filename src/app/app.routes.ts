@@ -29,6 +29,12 @@ export const routes: Routes = [
     loadChildren: () => import('@features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
   },
   {
+    path: APP_ROUTES.SUPERVISOR,
+    canActivate: [sessionGuard, roleGuard],
+    data: { role: ROLES.SUPERVISOR },
+    loadChildren: () => import('@features/supervisor/supervisor.routes').then((m) => m.SUPERVISOR_ROUTES),
+  },
+  {
     path: '**',
     redirectTo: '',
   },

@@ -3,6 +3,9 @@ import { KeyValuePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectionService } from '@core/services/election.service';
 import { DialogService } from '@core/services/dialog.service';
+import { SessionService } from '@core/services/session.service';
+import { ROLES } from '@core/constants/roles.constants';
+import { APP_ROUTES } from '@core/constants/routes.constants';
 
 @Component({
   selector: 'app-election-results',
@@ -16,6 +19,7 @@ export class ElectionResultsComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly electionService = inject(ElectionService);
   private readonly dialog = inject(DialogService);
+  private readonly session = inject(SessionService);
 
   public electionResults = signal<any>(null);
   public statistics = signal<any>(null);
@@ -56,7 +60,11 @@ export class ElectionResultsComponent implements OnInit {
   }
 
   public goBack(): void {
-    this.router.navigate(['/admin']);
+    if (this.session.userRole() === ROLES.SUPERVISOR) {
+      this.router.navigate(['/', APP_ROUTES.SUPERVISOR]);
+    } else {
+      this.router.navigate(['/', APP_ROUTES.ADMIN]);
+    }
   }
 
   public getPercentageClass(percentage: number): string {

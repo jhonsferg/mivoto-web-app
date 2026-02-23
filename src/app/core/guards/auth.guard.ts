@@ -14,6 +14,8 @@ export const authGuard: CanActivateFn = (route, state) => {
       return router.createUrlTree(['/', APP_ROUTES.ADMIN]);
     } else if (role === ROLES.VOTER) {
       return router.createUrlTree(['/', APP_ROUTES.VOTING]);
+    } else if (role === ROLES.SUPERVISOR) {
+      return router.createUrlTree(['/', APP_ROUTES.SUPERVISOR]);
     }
   }
 

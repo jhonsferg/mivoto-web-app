@@ -67,6 +67,8 @@ export class LoginComponent implements OnDestroy {
           this.isLoading.set(false);
           if (data.user.role === ROLES.ADMIN) {
             this.router.navigate(['/', APP_ROUTES.ADMIN]);
+          } else if (data.user.role === ROLES.SUPERVISOR) {
+            this.router.navigate(['/', APP_ROUTES.SUPERVISOR]);
           } else {
             this.router.navigate(['/', APP_ROUTES.VOTING]);
           }

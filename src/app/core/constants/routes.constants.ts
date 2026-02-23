@@ -4,5 +4,6 @@ export const APP_ROUTES = {
     FORGOT_PASSWORD: 'forgot-password',
     DASHBOARD: 'dashboard', // or empty if it's the default
     VOTING: 'voting',
-    ADMIN: 'admin'
+    ADMIN: 'admin',
+    SUPERVISOR: 'supervisor'
 };
