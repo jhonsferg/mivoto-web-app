@@ -156,7 +156,7 @@ export class ElectionResultsComponent implements OnInit {
               r.party,
               r.number,
               r.votes,
-              parseFloat(r.percentage?.toFixed(2)),
+              parseFloat((r.percentage ?? 0).toFixed(2)),
             ]),
           ];
           const candidateSheet = XLSX.utils.aoa_to_sheet(candidateRows);

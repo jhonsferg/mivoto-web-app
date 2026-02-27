@@ -107,7 +107,7 @@
           <div class="stat-card">
             <div class="stat-icon">📊</div>
             <div class="stat-info">
-              <span class="stat-value">{{ statistics()!.totalCandidates ?? electionResults()!.results.length }}</span>
+              <span class="stat-value">{{ statistics()!.totalCandidates || electionResults()!.results.length }}</span>
               <span class="stat-label">Candidatos</span>
             </div>
           </div>
