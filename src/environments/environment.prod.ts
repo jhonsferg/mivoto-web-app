@@ -1,5 +1,5 @@
 export const environment = {
     production: true,
-    apiUrl: 'https://api.mivoto.com/api',
+    apiUrl: 'https://mivotobackend.wilberc.dev/api',
     envName: 'prod'
 };

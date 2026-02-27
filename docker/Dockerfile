@@ -10,7 +10,7 @@ RUN npm ci --legacy-peer-deps
 COPY . .
 
 # Argument for build environment (dev, qa, prod)
-ARG BUILD_ENV=production
+ARG BUILD_ENV=prod
 RUN npm run build:${BUILD_ENV}
 
 # Stage 2: Serve
@@ -20,9 +20,9 @@ FROM nginx:alpine
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copy build artifacts
-# Note: Path 'dist/mivoto/browser' or 'dist/mivoto' depends on angular.json config. 
+# Note: Path 'dist/mivoto/browser' or 'dist/mivoto' depends on angular.json config.
 # Checking dist structure, it seems to be dist/mivoto based on previous build output.
-COPY --from=build /app/dist/mivoto/browser /usr/share/nginx/html 2>/dev/null || COPY --from=build /app/dist/mivoto /usr/share/nginx/html
+COPY --from=build /app/dist/mivoto/browser /usr/share/nginx/html
 
 # Copy custom nginx config
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf

@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  mivoto-frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        - BUILD_ENV=prod  # Now it will run "npm run build:prod"
+    container_name: mivoto-web-app-dev
+    restart: unless-stopped
+    ports:
+      - "5441:80"
+    networks:
+      - mivoto-dev-network
+
+networks:
+  mivoto-dev-network:
+    external: true
+    name: mivoto-dev-network
