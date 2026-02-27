@@ -133,7 +133,7 @@
           <div class="stat-card">
             <div class="stat-icon">🥇</div>
             <div class="stat-info">
-              <span class="stat-value">{{ statistics()!.leadingCandidate?.name || electionResults()!.results[0]?.candidateName || 'N/A' }}</span>
+              <span class="stat-value">{{ getLeadingCandidateName() }}</span>
               <span class="stat-label">Candidato Líder</span>
             </div>
           </div>

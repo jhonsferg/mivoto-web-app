@@ -84,6 +84,14 @@ export class ElectionResultsComponent implements OnInit {
     }
   }
 
+  public getLeadingCandidateName(): string {
+    const results = this.electionResults()?.results;
+    if (!results?.length) return 'N/A';
+    return results.reduce((best, curr) =>
+      (curr.percentage ?? 0) > (best.percentage ?? 0) ? curr : best
+    ).candidateName;
+  }
+
   public getPercentageClass(percentage: number | null): string {
     if ((percentage ?? 0) >= 50) return 'high';
     if ((percentage ?? 0) >= 25) return 'medium';
