@@ -84,9 +84,9 @@ export class ElectionResultsComponent implements OnInit {
     }
   }
 
-  public getPercentageClass(percentage: number): string {
-    if (percentage >= 50) return 'high';
-    if (percentage >= 25) return 'medium';
+  public getPercentageClass(percentage: number | null): string {
+    if ((percentage ?? 0) >= 50) return 'high';
+    if ((percentage ?? 0) >= 25) return 'medium';
     return 'low';
   }
 

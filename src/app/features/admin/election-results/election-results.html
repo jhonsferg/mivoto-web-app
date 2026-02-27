@@ -95,7 +95,7 @@
           <div class="winner-votes">
             <span class="winner-votes-value">{{ electionResults()!.results[0].votes }}</span>
             <span class="winner-votes-label">
-              votos · {{ electionResults()!.results[0].percentage.toFixed(2) }}%
+              votos · {{ (electionResults()!.results[0].percentage ?? 0).toFixed(2) }}%
             </span>
           </div>
         </div>
@@ -180,7 +180,7 @@
               </div>
 
               <div class="percentage-value" [class]="getPercentageClass(result.percentage)">
-                {{ result.percentage.toFixed(2) }}%
+                {{ (result.percentage ?? 0).toFixed(2) }}%
               </div>
             </div>
           </div>

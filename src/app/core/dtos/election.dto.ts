@@ -27,7 +27,7 @@ export interface CandidateResult {
     party: string;
     number: number;
     votes: number;
-    percentage: number;
+    percentage: number | null;
 }
 
 /**
