@@ -134,7 +134,7 @@ export class ElectionResultsComponent implements OnInit {
             [],
             ['Total de Votos', results.totalVotes],
             ['Total de Candidatos', stats?.totalCandidates ?? '—'],
-            ['Tasa de Participación', stats ? `${stats.participationRate?.toFixed(2)}%` : '—'],
+            ['Tasa de Participación', stats?.participationRate != null ? `${stats.participationRate.toFixed(2)}%` : '—'],
             ['Candidato Ganador', results.winner || stats?.leadingCandidate?.name || '—'],
             [],
             ['CONFIGURACIÓN'],

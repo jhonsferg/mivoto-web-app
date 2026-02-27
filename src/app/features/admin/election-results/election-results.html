@@ -107,7 +107,7 @@
           <div class="stat-card">
             <div class="stat-icon">📊</div>
             <div class="stat-info">
-              <span class="stat-value">{{ statistics()!.totalCandidates }}</span>
+              <span class="stat-value">{{ statistics()!.totalCandidates ?? electionResults()!.results.length }}</span>
               <span class="stat-label">Candidatos</span>
             </div>
           </div>
@@ -123,7 +123,9 @@
           <div class="stat-card">
             <div class="stat-icon">📈</div>
             <div class="stat-info">
-              <span class="stat-value">{{ statistics()!.participationRate.toFixed(2) }}%</span>
+              <span class="stat-value">
+                {{ statistics()!.participationRate != null ? statistics()!.participationRate.toFixed(2) + '%' : 'N/A' }}
+              </span>
               <span class="stat-label">Participación</span>
             </div>
           </div>
@@ -131,7 +133,7 @@
           <div class="stat-card">
             <div class="stat-icon">🥇</div>
             <div class="stat-info">
-              <span class="stat-value">{{ statistics()!.leadingCandidate?.name || 'N/A' }}</span>
+              <span class="stat-value">{{ statistics()!.leadingCandidate?.name || electionResults()!.results[0]?.candidateName || 'N/A' }}</span>
               <span class="stat-label">Candidato Líder</span>
             </div>
           </div>

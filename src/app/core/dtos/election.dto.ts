@@ -45,7 +45,7 @@ export interface ElectionResultsDto {
  */
 export interface ElectionStatisticsDto {
     totalVotes: number;
-    participationRate: number;
+    participationRate: number | null;
     totalCandidates: number;
     leadingCandidate?: {
         name: string;
