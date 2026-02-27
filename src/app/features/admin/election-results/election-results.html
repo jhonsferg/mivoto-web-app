@@ -124,7 +124,7 @@
             <div class="stat-icon">📈</div>
             <div class="stat-info">
               <span class="stat-value">
-                {{ statistics()!.participationRate != null ? statistics()!.participationRate.toFixed(2) + '%' : 'N/A' }}
+                {{ statistics()!.participationRate != null ? (statistics()!.participationRate ?? 0).toFixed(2) + '%' : 'N/A' }}
               </span>
               <span class="stat-label">Participación</span>
             </div>
