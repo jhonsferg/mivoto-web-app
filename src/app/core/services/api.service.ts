@@ -18,8 +18,8 @@ export class ApiService {
    * @param params (Optional) HTTP parameters.
    * @returns An Observable of type T.
    */
-  public get<T>(path: string, params: HttpParams = new HttpParams()): Observable<T> {
-    return this.http.get<T>(`${this.apiUrl}/${path}`, { params });
+  public get<T>(path: string, params: HttpParams = new HttpParams(), responseType: string = 'json'): Observable<T> {
+    return this.http.get<T>(`${this.apiUrl}/${path}`, { params, responseType: responseType as any });
   }
 
   /**
