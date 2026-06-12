@@ -60,6 +60,27 @@
         <button class="btn-apply" (click)="applyFilters()">Aplicar</button>
       </div>
     }
+  <div class="filter-action">
+    <button class="btn-export" (click)="exportAuditReport()">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2" />
+        <path d="M10 12l4 5" />
+        <path d="M10 17l4 -5" />
+      </svg>
+      <span>Exportar Excel</span>
+    </button>
+  </div>
   </div>
 
   @if (isLoading()) {

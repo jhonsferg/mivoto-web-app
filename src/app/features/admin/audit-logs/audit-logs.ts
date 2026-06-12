@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AuditService } from '@core/services/audit.service';
 import { DialogService } from '@core/services/dialog.service';
 import { AuditAction } from '@core/enums/audit-action.enum';
+import { ReportService } from '@core/services/report.service';
 
 @Component({
   selector: 'app-audit-logs',
@@ -15,6 +16,7 @@ import { AuditAction } from '@core/enums/audit-action.enum';
 export class AuditLogsComponent implements OnInit {
   private readonly auditService = inject(AuditService);
   private readonly dialog = inject(DialogService);
+  private readonly reportService = inject(ReportService);
 
   public logs = signal<any[]>([]);
   public isLoading = signal(true);
@@ -188,5 +190,15 @@ export class AuditLogsComponent implements OnInit {
       return 'security';
     }
     return 'normal';
+  }
+
+  public exportAuditReport() {
+    this.reportService.exportAuditReport('2026-01-01', '2026-06-11').subscribe((blob) => {
+      const link = document.createElement('a');
+      const objectURL = URL.createObjectURL(blob);
+      link.href = objectURL;
+      link.click();
+      URL.revokeObjectURL(objectURL);
+    });
   }
 }
