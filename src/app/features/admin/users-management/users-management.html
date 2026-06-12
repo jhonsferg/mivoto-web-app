@@ -5,200 +5,210 @@
   </div>
 
   @if (isLoading()) {
-    <div class="loading">
-      <p>Cargando usuarios...</p>
-    </div>
+  <div class="loading">
+    <p>Cargando usuarios...</p>
+  </div>
   }
 
   @if (!isLoading() && users().length === 0) {
-    <div class="empty-state">
-      <p>No hay usuarios registrados</p>
-      <button class="btn-primary" (click)="openCreateModal()">Crear Primer Usuario</button>
-    </div>
+  <div class="empty-state">
+    <p>No hay usuarios registrados</p>
+    <button class="btn-primary" (click)="openCreateModal()">Crear Primer Usuario</button>
+  </div>
   }
 
   @if (!isLoading() && users().length > 0) {
-    <div class="users-table">
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Documento</th>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Rol</th>
-            <th>Estado</th>
-            <th>Último Acceso</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (user of users(); track user.id) {
-            <tr>
-              <td>{{ user.id }}</td>
-              <td>{{ user.documentNumber }}</td>
-              <td>{{ user.firstName }} {{ user.lastName }}</td>
-              <td>{{ user.email }}</td>
-              <td>
-                <span class="role-badge" [class]="'role-' + user.role.toLowerCase()">
-                  {{ getRoleLabel(user.role) }}
-                </span>
-              </td>
-              <td>
-                <span class="status-badge" [class.active]="user.active">
-                  {{ user.active ? 'Activo' : 'Inactivo' }}
-                </span>
-              </td>
-              <td>{{ user.lastLogin | date: 'dd/MM/yyyy HH:mm' }}</td>
-              <td>
-                <div class="action-buttons">
-                  <button class="btn-action btn-edit" (click)="openEditModal(user)" title="Editar">
-                    ✏️
-                  </button>
-                  <button
-                    class="btn-action"
-                    [class.btn-activate]="!user.active"
-                    [class.btn-deactivate]="user.active"
-                    (click)="toggleUserStatus(user)"
-                    [title]="user.active ? 'Desactivar' : 'Activar'"
-                  >
-                    {{ user.active ? '🔒' : '✓' }}
-                  </button>
-                  <button class="btn-action btn-delete" (click)="deleteUser(user)" title="Eliminar">
-                    🗑️
-                  </button>
-                </div>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+  <div class="users-table">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Documento</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th>Último Acceso</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users(); track user.id) {
+        <tr>
+          <td>{{ user.id }}</td>
+          <td>{{ user.documentNumber }}</td>
+          <td>{{ user.firstName }} {{ user.lastName }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <span class="role-badge" [class]="'role-' + user.role.toLowerCase()">
+              {{ getRoleLabel(user.role) }}
+            </span>
+          </td>
+          <td>
+            <span class="status-badge" [class.active]="user.active">
+              {{ user.active ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td>{{ user.lastLogin | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn-action btn-edit" (click)="openEditModal(user)" title="Editar">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                  stroke="#ffcc00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+                  <path d="M13.5 6.5l4 4" />
+                </svg>
+
+              </button>
+              <button class="btn-action" [class.btn-activate]="!user.active" [class.btn-deactivate]="user.active"
+                (click)="toggleUserStatus(user)" [title]="user.active ? 'Desactivar' : 'Activar'">
+                {{ user.active ? '🔒' : '✓' }}
+              </button>
+              <button class="btn-action btn-delete" (click)="deleteUser(user)" title="Eliminar">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                  stroke="#93beec" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 7l16 0" />
+                  <path d="M10 11l0 6" />
+                  <path d="M14 11l0 6" />
+                  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                </svg>
+
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
   }
 
   <!-- Create Modal -->
   @if (showCreateModal()) {
-    <div class="modal-overlay" (click)="closeCreateModal()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-          <h2>Nuevo Usuario</h2>
-          <button class="btn-close" (click)="closeCreateModal()">✕</button>
-        </div>
-        <form [formGroup]="userForm" (ngSubmit)="createUser()">
-          <div class="form-group">
-            <label for="documentNumber">Número de Documento *</label>
-            <input type="text" id="documentNumber" formControlName="documentNumber" />
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="firstName">Nombre *</label>
-              <input type="text" id="firstName" formControlName="firstName" />
-            </div>
-
-            <div class="form-group">
-              <label for="lastName">Apellido *</label>
-              <input type="text" id="lastName" formControlName="lastName" />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="email">Email *</label>
-            <input type="email" id="email" formControlName="email" />
-          </div>
-
-          <div class="form-group">
-            <label for="password">Contraseña *</label>
-            <input type="password" id="password" formControlName="password" />
-            <small>Mínimo 6 caracteres</small>
-          </div>
-
-          <div class="form-group">
-            <label for="role">Rol *</label>
-            <select id="role" formControlName="role">
-              @for (role of roles; track role.value) {
-                <option [value]="role.value">{{ role.label }}</option>
-              }
-            </select>
-          </div>
-
-          <div class="form-group checkbox">
-            <label>
-              <input type="checkbox" formControlName="active" />
-              Usuario activo
-            </label>
-          </div>
-
-          <div class="modal-actions">
-            <button type="button" class="btn-secondary" (click)="closeCreateModal()">
-              Cancelar
-            </button>
-            <button type="submit" class="btn-primary" [disabled]="!userForm.valid">
-              Crear Usuario
-            </button>
-          </div>
-        </form>
+  <div class="modal-overlay" (click)="closeCreateModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Nuevo Usuario</h2>
+        <button class="btn-close" (click)="closeCreateModal()">✕</button>
       </div>
+      <form [formGroup]="userForm" (ngSubmit)="createUser()">
+        <div class="form-group">
+          <label for="documentNumber">Número de Documento *</label>
+          <input type="text" id="documentNumber" formControlName="documentNumber" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">Nombre *</label>
+            <input type="text" id="firstName" formControlName="firstName" />
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Apellido *</label>
+            <input type="text" id="lastName" formControlName="lastName" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input type="email" id="email" formControlName="email" />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contraseña *</label>
+          <input type="password" id="password" formControlName="password" />
+          <small>Mínimo 6 caracteres</small>
+        </div>
+
+        <div class="form-group">
+          <label for="role">Rol *</label>
+          <select id="role" formControlName="role">
+            @for (role of roles; track role.value) {
+            <option [value]="role.value">{{ role.label }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group checkbox">
+          <label>
+            <input type="checkbox" formControlName="active" />
+            Usuario activo
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" (click)="closeCreateModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="!userForm.valid">
+            Crear Usuario
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
   }
 
   <!-- Edit Modal -->
   @if (showEditModal()) {
-    <div class="modal-overlay" (click)="closeEditModal()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-          <h2>Editar Usuario</h2>
-          <button class="btn-close" (click)="closeEditModal()">✕</button>
-        </div>
-        <form [formGroup]="userForm" (ngSubmit)="updateUser()">
-          <div class="form-group">
-            <label for="edit-documentNumber">Número de Documento *</label>
-            <input type="text" id="edit-documentNumber" formControlName="documentNumber" />
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="edit-firstName">Nombre *</label>
-              <input type="text" id="edit-firstName" formControlName="firstName" />
-            </div>
-
-            <div class="form-group">
-              <label for="edit-lastName">Apellido *</label>
-              <input type="text" id="edit-lastName" formControlName="lastName" />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="edit-email">Email *</label>
-            <input type="email" id="edit-email" formControlName="email" />
-          </div>
-
-          <div class="form-group">
-            <label for="edit-role">Rol *</label>
-            <select id="edit-role" formControlName="role">
-              @for (role of roles; track role.value) {
-                <option [value]="role.value">{{ role.label }}</option>
-              }
-            </select>
-          </div>
-
-          <div class="form-group checkbox">
-            <label>
-              <input type="checkbox" formControlName="active" />
-              Usuario activo
-            </label>
-          </div>
-
-          <div class="modal-actions">
-            <button type="button" class="btn-secondary" (click)="closeEditModal()">
-              Cancelar
-            </button>
-            <button type="submit" class="btn-primary" [disabled]="!userForm.valid">
-              Actualizar Usuario
-            </button>
-          </div>
-        </form>
+  <div class="modal-overlay" (click)="closeEditModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Editar Usuario</h2>
+        <button class="btn-close" (click)="closeEditModal()">✕</button>
       </div>
+      <form [formGroup]="userForm" (ngSubmit)="updateUser()">
+        <div class="form-group">
+          <label for="edit-documentNumber">Número de Documento *</label>
+          <input type="text" id="edit-documentNumber" formControlName="documentNumber" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-firstName">Nombre *</label>
+            <input type="text" id="edit-firstName" formControlName="firstName" />
+          </div>
+
+          <div class="form-group">
+            <label for="edit-lastName">Apellido *</label>
+            <input type="text" id="edit-lastName" formControlName="lastName" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-email">Email *</label>
+          <input type="email" id="edit-email" formControlName="email" />
+        </div>
+
+        <div class="form-group">
+          <label for="edit-role">Rol *</label>
+          <select id="edit-role" formControlName="role">
+            @for (role of roles; track role.value) {
+            <option [value]="role.value">{{ role.label }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group checkbox">
+          <label>
+            <input type="checkbox" formControlName="active" />
+            Usuario activo
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" (click)="closeEditModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="!userForm.valid">
+            Actualizar Usuario
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
   }
 </div>

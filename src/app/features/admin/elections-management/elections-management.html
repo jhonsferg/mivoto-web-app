@@ -5,192 +5,257 @@
   </div>
 
   @if (isLoading()) {
-    <div class="loading">
-      <p>Cargando elecciones...</p>
-    </div>
+  <div class="loading">
+    <p>Cargando elecciones...</p>
+  </div>
   }
 
   @if (!isLoading() && elections().length === 0) {
-    <div class="empty-state">
-      <p>No hay elecciones registradas</p>
-      <button class="btn-primary" (click)="openCreateModal()">Crear Primera Elección</button>
-    </div>
+  <div class="empty-state">
+    <p>No hay elecciones registradas</p>
+    <button class="btn-primary" (click)="openCreateModal()">Crear Primera Elección</button>
+  </div>
   }
 
   @if (!isLoading() && elections().length > 0) {
-    <div class="elections-table">
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Título</th>
-            <th>Estado</th>
-            <th>Fecha Inicio</th>
-            <th>Fecha Fin</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (election of elections(); track election.id) {
-            <tr>
-              <td>{{ election.id }}</td>
-              <td>
-                <div class="election-title">{{ election.title }}</div>
-                <div class="election-description">{{ election.description }}</div>
-              </td>
-              <td>
-                <span class="status-badge" [class]="getStatusClass(election.status)">
-                  {{ getStatusLabel(election.status) }}
-                </span>
-              </td>
-              <td>{{ election.startDate | date: 'dd/MM/yyyy HH:mm' }}</td>
-              <td>{{ election.endDate | date: 'dd/MM/yyyy HH:mm' }}</td>
-              <td>
-                <div class="action-buttons">
-                  <button class="btn-action btn-edit" (click)="openEditModal(election)" title="Editar">
-                    ✏️
-                  </button>
-                  @if (election.status === 'DRAFT') {
-                    <button class="btn-action btn-schedule" (click)="scheduleElection(election.id)" title="Programar">
-                      📅
-                    </button>
-                  }
-                  @if (election.status === 'SCHEDULED') {
-                    <button class="btn-action btn-start" (click)="startElection(election.id)" title="Iniciar">
-                      ▶️
-                    </button>
-                  }
-                  @if (election.status === 'ACTIVE') {
-                    <button class="btn-action btn-close" (click)="closeElection(election.id)" title="Cerrar">
-                      ⏹️
-                    </button>
-                  }
-                  @if (election.status !== 'CANCELLED' && election.status !== 'CLOSED') {
-                    <button class="btn-action btn-cancel" (click)="cancelElection(election.id)" title="Cancelar">
-                      ❌
-                    </button>
-                  }
-                  <button class="btn-action btn-candidates" (click)="manageCandidates(election.id)" title="Gestionar Candidatos">
-                    👥
-                  </button>
-                  @if (election.status === 'CLOSED') {
-                    <button class="btn-action btn-results" (click)="viewResults(election.id)" title="Ver Resultados">
-                      📊
-                    </button>
-                  }
-                </div>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+  <div class="elections-table">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Título</th>
+          <th>Estado</th>
+          <th>Fecha Inicio</th>
+          <th>Fecha Fin</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (election of elections(); track election.id) {
+        <tr>
+          <td>{{ election.id }}</td>
+          <td>
+            <div class="election-title">{{ election.title }}</div>
+            <div class="election-description">{{ election.description }}</div>
+          </td>
+          <td>
+            <span class="status-badge" [class]="getStatusClass(election.status)">
+              {{ getStatusLabel(election.status) }}
+            </span>
+          </td>
+          <td>{{ election.startDate | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ election.endDate | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn-action btn-edit" (click)="openEditModal(election)" title="Editar">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                  stroke="#cddc39" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 6l7 7l-4 4" />
+                  <path
+                    d="M5.828 18.172a2.828 2.828 0 0 0 4 0l10.586 -10.586a2 2 0 0 0 0 -2.829l-1.171 -1.171a2 2 0 0 0 -2.829 0l-10.586 10.586a2.828 2.828 0 0 0 0 4z" />
+                  <path d="M4 20l1.768 -1.768" />
+                </svg>
+
+              </button>
+              @if (election.status === 'DRAFT') {
+              <button class="btn-action btn-schedule" (click)="scheduleElection(election.id)" title="Programar">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                  stroke="#00c7be" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
+                  <path d="M16 3v4" />
+                  <path d="M8 3v4" />
+                  <path d="M4 11h16" />
+                  <path d="M7 14h.013" />
+                  <path d="M10.01 14h.005" />
+                  <path d="M13.01 14h.005" />
+                  <path d="M16.015 14h.005" />
+                  <path d="M13.015 17h.005" />
+                  <path d="M7.01 17h.005" />
+                  <path d="M10.01 17h.005" />
+                </svg>
+
+              </button>
+              }
+              @if (election.status === 'SCHEDULED') {
+              <button class="btn-action btn-start" (click)="startElection(election.id)" title="Iniciar">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                  stroke="#93beec" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M15 12l-4 -4v8z" />
+                  <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                </svg>
+
+              </button>
+              }
+              @if (election.status === 'ACTIVE') {
+              <button class="btn-action btn-close" (click)="closeElection(election.id)" title="Cerrar">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                  stroke="#991a31" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path
+                    d="M8 4h11a2 2 0 0 1 2 2v11m-1.172 2.821a1.993 1.993 0 0 1 -.828 .179h-14a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 1.156 -1.814" />
+                  <path d="M7 8h1m4 0h5" />
+                  <path d="M7 12h5m4 0h1" />
+                  <path d="M7 16h9" />
+                  <path d="M3 3l18 18" />
+                </svg>
+
+              </button>
+              }
+              @if (election.status !== 'CANCELLED' && election.status !== 'CLOSED') {
+              <button class="btn-action btn-cancel" (click)="cancelElection(election.id)" title="Cancelar">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                  stroke="#991a31" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 7h16" />
+                  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                  <path d="M10 12l4 4m0 -4l-4 4" />
+                </svg>
+
+
+              </button>
+              }
+              <button class="btn-action btn-candidates" (click)="manageCandidates(election.id)"
+                title="Gestionar Candidatos">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                  stroke="#007aff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+                  <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+                </svg>
+
+              </button>
+              @if (election.status === 'CLOSED') {
+              <button class="btn-action btn-results" (click)="viewResults(election.id)" title="Ver Resultados">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                  stroke="#4cd964" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                  <path d="M9 15v2" />
+                  <path d="M12 11v6" />
+                  <path d="M15 13v4" />
+                </svg>
+
+              </button>
+              }
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
   }
 
   <!-- Create Modal -->
   @if (showCreateModal()) {
-    <div class="modal-overlay" (click)="closeCreateModal()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-          <h2>Nueva Elección</h2>
-          <button class="btn-close" (click)="closeCreateModal()">✕</button>
-        </div>
-        <form [formGroup]="electionForm" (ngSubmit)="createElection()">
-          <div class="form-group">
-            <label for="title">Título *</label>
-            <input type="text" id="title" formControlName="title" />
-          </div>
-
-          <div class="form-group">
-            <label for="description">Descripción</label>
-            <textarea id="description" formControlName="description" rows="3"></textarea>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="startDate">Fecha de Inicio *</label>
-              <input type="datetime-local" id="startDate" formControlName="startDate" />
-            </div>
-
-            <div class="form-group">
-              <label for="endDate">Fecha de Fin *</label>
-              <input type="datetime-local" id="endDate" formControlName="endDate" />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="maxVotesPerUser">Máximo de Votos por Usuario *</label>
-            <input type="number" id="maxVotesPerUser" formControlName="maxVotesPerUser" min="1" />
-          </div>
-
-          <div class="form-group checkbox">
-            <label>
-              <input type="checkbox" formControlName="allowsBlankVote" />
-              Permitir voto en blanco
-            </label>
-          </div>
-
-          <div class="form-group checkbox">
-            <label>
-              <input type="checkbox" formControlName="requiresVerification" />
-              Requiere verificación
-            </label>
-          </div>
-
-          <div class="modal-actions">
-            <button type="button" class="btn-secondary" (click)="closeCreateModal()">
-              Cancelar
-            </button>
-            <button type="submit" class="btn-primary" [disabled]="!electionForm.valid">
-              Crear Elección
-            </button>
-          </div>
-        </form>
+  <div class="modal-overlay" (click)="closeCreateModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Nueva Elección</h2>
+        <button class="btn-close" (click)="closeCreateModal()">✕</button>
       </div>
+      <form [formGroup]="electionForm" (ngSubmit)="createElection()">
+        <div class="form-group">
+          <label for="title">Título *</label>
+          <input type="text" id="title" formControlName="title" />
+        </div>
+
+        <div class="form-group">
+          <label for="description">Descripción</label>
+          <textarea id="description" formControlName="description" rows="3"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="startDate">Fecha de Inicio *</label>
+            <input type="datetime-local" id="startDate" formControlName="startDate" />
+          </div>
+
+          <div class="form-group">
+            <label for="endDate">Fecha de Fin *</label>
+            <input type="datetime-local" id="endDate" formControlName="endDate" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="maxVotesPerUser">Máximo de Votos por Usuario *</label>
+          <input type="number" id="maxVotesPerUser" formControlName="maxVotesPerUser" min="1" />
+        </div>
+
+        <div class="form-group checkbox">
+          <label>
+            <input type="checkbox" formControlName="allowsBlankVote" />
+            Permitir voto en blanco
+          </label>
+        </div>
+
+        <div class="form-group checkbox">
+          <label>
+            <input type="checkbox" formControlName="requiresVerification" />
+            Requiere verificación
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" (click)="closeCreateModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="!electionForm.valid">
+            Crear Elección
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
   }
 
   <!-- Edit Modal -->
   @if (showEditModal()) {
-    <div class="modal-overlay" (click)="closeEditModal()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-          <h2>Editar Elección</h2>
-          <button class="btn-close" (click)="closeEditModal()">✕</button>
-        </div>
-        <form [formGroup]="electionForm" (ngSubmit)="updateElection()">
-          <div class="form-group">
-            <label for="edit-title">Título *</label>
-            <input type="text" id="edit-title" formControlName="title" />
-          </div>
-
-          <div class="form-group">
-            <label for="edit-description">Descripción</label>
-            <textarea id="edit-description" formControlName="description" rows="3"></textarea>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="edit-startDate">Fecha de Inicio *</label>
-              <input type="datetime-local" id="edit-startDate" formControlName="startDate" />
-            </div>
-
-            <div class="form-group">
-              <label for="edit-endDate">Fecha de Fin *</label>
-              <input type="datetime-local" id="edit-endDate" formControlName="endDate" />
-            </div>
-          </div>
-
-          <div class="modal-actions">
-            <button type="button" class="btn-secondary" (click)="closeEditModal()">
-              Cancelar
-            </button>
-            <button type="submit" class="btn-primary" [disabled]="!electionForm.valid">
-              Actualizar Elección
-            </button>
-          </div>
-        </form>
+  <div class="modal-overlay" (click)="closeEditModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Editar Elección</h2>
+        <button class="btn-close" (click)="closeEditModal()">✕</button>
       </div>
+      <form [formGroup]="electionForm" (ngSubmit)="updateElection()">
+        <div class="form-group">
+          <label for="edit-title">Título *</label>
+          <input type="text" id="edit-title" formControlName="title" />
+        </div>
+
+        <div class="form-group">
+          <label for="edit-description">Descripción</label>
+          <textarea id="edit-description" formControlName="description" rows="3"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-startDate">Fecha de Inicio *</label>
+            <input type="datetime-local" id="edit-startDate" formControlName="startDate" />
+          </div>
+
+          <div class="form-group">
+            <label for="edit-endDate">Fecha de Fin *</label>
+            <input type="datetime-local" id="edit-endDate" formControlName="endDate" />
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" (click)="closeEditModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="!electionForm.valid">
+            Actualizar Elección
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
   }
 </div>

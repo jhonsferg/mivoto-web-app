@@ -2,216 +2,306 @@
 
   <!-- Export overlay -->
   @if (isExporting()) {
-    <div class="export-overlay">
-      <div class="export-overlay-card">
-        <div class="overlay-spinner"></div>
-        <p class="overlay-title">Generando archivo Excel</p>
-        <p class="overlay-subtitle">Por favor espere…</p>
-      </div>
+  <div class="export-overlay">
+    <div class="export-overlay-card">
+      <div class="overlay-spinner"></div>
+      <p class="overlay-title">Generando archivo Excel</p>
+      <p class="overlay-subtitle">Por favor espere…</p>
     </div>
+  </div>
   }
-
   <!-- Header -->
   <div class="header">
     <button class="btn-back" (click)="goBack()">← Volver al Panel</button>
     <div class="header-top">
       <h1>Resultados de Elección</h1>
       @if (!isLoading() && electionResults()) {
-        <button class="btn-export" (click)="exportToExcel()" [disabled]="isExporting()">
-          ⬇ Exportar a Excel
-        </button>
+      <button class="btn-export" (click)="exportToExcel()" [disabled]="isExporting()">
+        ⬇ Exportar a Excel
+      </button>
       }
     </div>
   </div>
-
   @if (isLoading()) {
-    <div class="loading">
-      <p>Cargando resultados…</p>
-    </div>
+  <div class="loading">
+    <p>Cargando resultados…</p>
+  </div>
   }
-
   @if (!isLoading() && electionResults()) {
-    <div class="results-content">
+  <div class="results-content">
+    <!-- Election Info Card -->
+    <div class="election-info-card">
+      <div class="election-header">
+        <h2>{{ electionResults()!.electionTitle }}</h2>
+        @if (electionDetails()) {
+        <span class="status-badge status-{{ electionDetails()!.status.toLowerCase() }}">
+          {{ getStatusLabel(electionDetails()!.status) }}
+        </span>
+        }
+      </div>
 
-      <!-- Election Info Card -->
-      <div class="election-info-card">
-        <div class="election-header">
-          <h2>{{ electionResults()!.electionTitle }}</h2>
-          @if (electionDetails()) {
-            <span class="status-badge status-{{ electionDetails()!.status.toLowerCase() }}">
-              {{ getStatusLabel(electionDetails()!.status) }}
-            </span>
+      @if (electionDetails()?.description) {
+      <p class="election-description">{{ electionDetails()!.description }}</p>
+      }
+      @if (electionDetails()) {
+      <div class="election-dates">
+        <div class="date-item">
+          <span class="date-icon">
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+              stroke="#ffcc00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
+              <path d="M16 3v4" />
+              <path d="M8 3v4" />
+              <path d="M4 11h16" />
+              <path d="M8 14v4" />
+              <path d="M12 14v4" />
+              <path d="M16 14v4" />
+            </svg>
+
+          </span>
+          <span class="date-label">Inicio</span>
+          <span class="date-value">{{ electionDetails()!.startDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <div class="date-divider"></div>
+        <div class="date-item">
+          <span class="date-icon">
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+              stroke="#ff2d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M9 5h9a2 2 0 0 1 2 2v9m-.184 3.839a2 2 0 0 1 -1.816 1.161h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 1.158 -1.815" />
+              <path d="M16 3v4" />
+              <path d="M8 3v1" />
+              <path d="M4 11h7m4 0h5" />
+              <path d="M3 3l18 18" />
+            </svg>
+
+          </span>
+          <span class="date-label">Cierre</span>
+          <span class="date-value">{{ electionDetails()!.endDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+      </div>
+
+      <div class="election-config">
+        <span class="config-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="#4cd964" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+            <path d="M9 15l2 2l4 -4" />
+          </svg>
+          Máx. {{ electionDetails()!.maxVotesPerUser }}
+          {{ electionDetails()!.maxVotesPerUser !== 1 ? 'votos' : 'voto' }}
+        </span>
+        @if (electionDetails()!.allowsBlankVote) {
+        <span class="config-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 2l.117 .007a1 1 0 0 1 .876 .876l.007 .117v4l.005 .15a2 2 0 0 0 1.838 1.844l.157 .006h4l.117 .007a1 1 0 0 1 .876 .876l.007 .117v9a3 3 0 0 1 -2.824 2.995l-.176 .005h-10a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-14a3 3 0 0 1 2.824 -2.995l.176 -.005h5z" />
+            <path d="M19 7h-4l-.001 -4.001z" />
+          </svg>Voto en blanco</span>
+        }
+        @if (electionDetails()!.requiresVerification) {
+        <span class="config-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="#ffcc00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z" />
+            <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" />
+            <path d="M8 11v-4a4 4 0 1 1 8 0v4" />
+          </svg> Verificación requerida</span>
+        }
+      </div>
+      }
+
+      <div class="total-votes">
+        <span class="label">Total de Votos:</span>
+        <span class="value">{{ electionResults()!.totalVotes }}</span>
+      </div>
+    </div>
+
+    <!-- Winner Banner -->
+    @if (electionResults()!.results.length > 0) {
+    <div class="winner-banner">
+      <div class="winner-crown">
+
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M12 2a1 1 0 0 1 .993 .883l.007 .117v2h2a1 1 0 0 1 .117 1.993l-.117 .007h-2v1.758a4.49 4.49 0 0 1 2.033 -.734l.24 -.018l.227 -.006a4.5 4.5 0 0 1 4.5 4.5a4.504 4.504 0 0 1 -4.064 4.478l-.217 .016l-.219 .006h-7a4.5 4.5 0 1 1 2.501 -8.241l-.001 -1.759h-2a1 1 0 0 1 -.117 -1.993l.117 -.007h2v-2a1 1 0 0 1 1 -1z" />
+          <path
+            d="M18 18h-12a1 1 0 0 0 -1 1a2 2 0 0 0 2 2h10a2 2 0 0 0 1.987 -1.768l.011 -.174a1 1 0 0 0 -.998 -1.058z" />
+        </svg>
+
+      </div>
+      <div class="winner-info">
+        <span class="winner-label">GANADOR</span>
+        <span class="winner-name">{{ electionResults()!.results[0].candidateName }}</span>
+        <span class="winner-party">{{ electionResults()!.results[0].party }}</span>
+      </div>
+      <div class="winner-votes">
+        <span class="winner-votes-value">{{ electionResults()!.results[0].votes }}</span>
+        <span class="winner-votes-label">
+          votos · {{ (electionResults()!.results[0].percentage ?? 0).toFixed(2) }}%
+        </span>
+      </div>
+    </div>
+    }
+
+    <!-- Statistics Cards -->
+    @if (statistics()) {
+    <div class="statistics-cards">
+      <div class="stat-card">
+        <div class="stat-icon">
+
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+            stroke="#007aff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+            <path d="M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+            <path d="M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+            <path d="M4 20h14" />
+          </svg>
+
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ statistics()!.totalCandidates || electionResults()!.results.length }}</span>
+          <span class="stat-label">Candidatos</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">
+
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M2 3m0 2a2 2 0 0 1 2 -2h16a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-16a2 2 0 0 1 -2 -2z" />
+            <path
+              d="M19 9c.513 0 .936 .463 .993 1.06l.007 .14v7.2c0 1.917 -1.249 3.484 -2.824 3.594l-.176 .006h-10c-1.598 0 -2.904 -1.499 -2.995 -3.388l-.005 -.212v-7.2c0 -.663 .448 -1.2 1 -1.2h14zm-5 2h-4l-.117 .007a1 1 0 0 0 0 1.986l.117 .007h4l.117 -.007a1 1 0 0 0 0 -1.986l-.117 -.007z" />
+          </svg>
+
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ electionResults()!.totalVotes }}</span>
+          <span class="stat-label">Votos Emitidos</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">
+
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+            stroke="#007aff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v18h18" />
+            <path d="M20 18v3" />
+            <path d="M16 16v5" />
+            <path d="M12 13v8" />
+            <path d="M8 16v5" />
+            <path d="M3 11c6 0 5 -5 9 -5s3 5 9 5" />
+          </svg>
+
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">
+            {{ ((statistics()!.totalVotes / 37) * 100).toFixed(2) }}%
+          </span>
+          <span class="stat-label">Participación</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">
+
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+            stroke="#ffcc00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 16l-1.447 .724a1 1 0 0 0 -.553 .894v2.382h12v-2.382a1 1 0 0 0 -.553 -.894l-1.447 -.724h-8z" />
+            <path d="M8.5 16a3.5 3.5 0 1 1 3.163 -5h.674a3.5 3.5 0 1 1 3.163 5z" />
+            <path d="M9 6h6" />
+            <path d="M12 3v8" />
+          </svg>
+
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ getLeadingCandidateName() }}</span>
+          <span class="stat-label">Candidato Líder</span>
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Results by Candidate -->
+    <div class="results-list">
+      <h3>Resultados por Candidato</h3>
+
+      @if (electionResults()!.results.length === 0) {
+      <div class="empty-state">
+        <p>No hay resultados disponibles aún</p>
+      </div>
+      }
+
+      @for (result of electionResults()!.results; track result.candidateId; let i = $index) {
+      <div class="result-card" [class.winner]="i === 0">
+        <div class="rank">
+          <span class="rank-number">{{ i + 1 }}</span>
+          @if (i === 0) {
+          <span class="crown">
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+              stroke="#ffcc00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 16l-1.447 .724a1 1 0 0 0 -.553 .894v2.382h12v-2.382a1 1 0 0 0 -.553 -.894l-1.447 -.724h-8z" />
+              <path d="M8.5 16a3.5 3.5 0 1 1 3.163 -5h.674a3.5 3.5 0 1 1 3.163 5z" />
+              <path d="M9 6h6" />
+              <path d="M12 3v8" />
+            </svg>
+
+          </span>
           }
         </div>
 
-        @if (electionDetails()?.description) {
-          <p class="election-description">{{ electionDetails()!.description }}</p>
-        }
+        <div class="candidate-info">
+          <h4>{{ result.candidateName }}</h4>
+          <p class="party">{{ result.party }}</p>
+          <p class="number">Número: {{ result.number }}</p>
+        </div>
 
-        @if (electionDetails()) {
-          <div class="election-dates">
-            <div class="date-item">
-              <span class="date-icon">📅</span>
-              <span class="date-label">Inicio</span>
-              <span class="date-value">{{ electionDetails()!.startDate | date: 'dd/MM/yyyy HH:mm' }}</span>
-            </div>
-            <div class="date-divider"></div>
-            <div class="date-item">
-              <span class="date-icon">🏁</span>
-              <span class="date-label">Cierre</span>
-              <span class="date-value">{{ electionDetails()!.endDate | date: 'dd/MM/yyyy HH:mm' }}</span>
-            </div>
+        <div class="vote-stats">
+          <div class="votes">
+            <span class="votes-value">{{ result.votes }}</span>
+            <span class="votes-label">votos</span>
           </div>
 
-          <div class="election-config">
-            <span class="config-badge">
-              🗳️ Máx. {{ electionDetails()!.maxVotesPerUser }}
-              {{ electionDetails()!.maxVotesPerUser !== 1 ? 'votos' : 'voto' }}
-            </span>
-            @if (electionDetails()!.allowsBlankVote) {
-              <span class="config-badge">✅ Voto en blanco</span>
-            }
-            @if (electionDetails()!.requiresVerification) {
-              <span class="config-badge">🔒 Verificación requerida</span>
-            }
+          <div class="percentage-bar">
+            <div class="percentage-fill" [class]="getPercentageClass(result.percentage)"
+              [style.width.%]="result.percentage"></div>
           </div>
-        }
 
-        <div class="total-votes">
-          <span class="label">Total de Votos:</span>
-          <span class="value">{{ electionResults()!.totalVotes }}</span>
+          <div class="percentage-value" [class]="getPercentageClass(result.percentage)">
+            {{ (result.percentage ?? 0).toFixed(2) }}%
+          </div>
         </div>
       </div>
-
-      <!-- Winner Banner -->
-      @if (electionResults()!.results.length > 0) {
-        <div class="winner-banner">
-          <div class="winner-crown">👑</div>
-          <div class="winner-info">
-            <span class="winner-label">GANADOR</span>
-            <span class="winner-name">{{ electionResults()!.results[0].candidateName }}</span>
-            <span class="winner-party">{{ electionResults()!.results[0].party }}</span>
-          </div>
-          <div class="winner-votes">
-            <span class="winner-votes-value">{{ electionResults()!.results[0].votes }}</span>
-            <span class="winner-votes-label">
-              votos · {{ (electionResults()!.results[0].percentage ?? 0).toFixed(2) }}%
-            </span>
-          </div>
-        </div>
       }
+    </div>
 
-      <!-- Statistics Cards -->
-      @if (statistics()) {
-        <div class="statistics-cards">
-          <div class="stat-card">
-            <div class="stat-icon">📊</div>
-            <div class="stat-info">
-              <span class="stat-value">{{ statistics()!.totalCandidates || electionResults()!.results.length }}</span>
-              <span class="stat-label">Candidatos</span>
-            </div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-icon">🗳️</div>
-            <div class="stat-info">
-              <span class="stat-value">{{ electionResults()!.totalVotes }}</span>
-              <span class="stat-label">Votos Emitidos</span>
-            </div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-icon">📈</div>
-            <div class="stat-info">
-              <span class="stat-value">
-                {{ ((statistics()!.totalVotes / 37) * 100).toFixed(2) }}%
-              </span>
-              <span class="stat-label">Participación</span>
-            </div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-icon">🥇</div>
-            <div class="stat-info">
-              <span class="stat-value">{{ getLeadingCandidateName() }}</span>
-              <span class="stat-label">Candidato Líder</span>
-            </div>
-          </div>
-        </div>
-      }
-
-      <!-- Results by Candidate -->
-      <div class="results-list">
-        <h3>Resultados por Candidato</h3>
-
-        @if (electionResults()!.results.length === 0) {
-          <div class="empty-state">
-            <p>No hay resultados disponibles aún</p>
-          </div>
-        }
-
-        @for (result of electionResults()!.results; track result.candidateId; let i = $index) {
-          <div class="result-card" [class.winner]="i === 0">
-            <div class="rank">
-              <span class="rank-number">{{ i + 1 }}</span>
-              @if (i === 0) {
-                <span class="crown">👑</span>
-              }
-            </div>
-
-            <div class="candidate-info">
-              <h4>{{ result.candidateName }}</h4>
-              <p class="party">{{ result.party }}</p>
-              <p class="number">Número: {{ result.number }}</p>
-            </div>
-
-            <div class="vote-stats">
-              <div class="votes">
-                <span class="votes-value">{{ result.votes }}</span>
-                <span class="votes-label">votos</span>
-              </div>
-
-              <div class="percentage-bar">
-                <div
-                  class="percentage-fill"
-                  [class]="getPercentageClass(result.percentage)"
-                  [style.width.%]="result.percentage"
-                ></div>
-              </div>
-
-              <div class="percentage-value" [class]="getPercentageClass(result.percentage)">
-                {{ (result.percentage ?? 0).toFixed(2) }}%
-              </div>
-            </div>
-          </div>
-        }
-      </div>
-
-      <!-- Votes by Party -->
-      @if (statistics()?.votesByParty) {
-        <div class="party-summary">
-          <h3>Votos por Partido</h3>
-          <div class="party-list">
-            @for (party of (statistics()!.votesByParty! | keyvalue); track party.key) {
-              <div class="party-item">
-                <span class="party-name">{{ party.key }}</span>
-                <div class="party-bar-wrap">
-                  <div
-                    class="party-bar"
-                    [style.width.%]="
+    <!-- Votes by Party -->
+    @if (statistics()?.votesByParty) {
+    <div class="party-summary">
+      <h3>Votos por Partido</h3>
+      <div class="party-list">
+        @for (party of (statistics()!.votesByParty! | keyvalue); track party.key) {
+        <div class="party-item">
+          <span class="party-name">{{ party.key }}</span>
+          <div class="party-bar-wrap">
+            <div class="party-bar" [style.width.%]="
                       electionResults()!.totalVotes
                         ? (+party.value / electionResults()!.totalVotes) * 100
                         : 0
-                    "
-                  ></div>
-                </div>
-                <span class="party-votes">{{ party.value }} votos</span>
-              </div>
-            }
+                    "></div>
           </div>
+          <span class="party-votes">{{ party.value }} votos</span>
         </div>
-      }
-
+        }
+      </div>
     </div>
+    }
+
+  </div>
   }
 </div>
